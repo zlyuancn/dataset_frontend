@@ -12,17 +12,18 @@
  * Do not edit the class manually.
  */
 
+import { DatasetSearchDatasetNameLine } from './dataset-search-dataset-name-line';
  /**
  * 
  *
  * @export
- * @interface DatasetQueryDatasetStatusInfoReq
+ * @interface DatasetSearchDatasetNameRsp
  */
-export interface DatasetQueryDatasetStatusInfoReq {
+export interface DatasetSearchDatasetNameRsp {
 
     /**
-     * @type {Array<string>}
-     * @memberof DatasetQueryDatasetStatusInfoReq
+     * @type {Array<DatasetSearchDatasetNameLine>}
+     * @memberof DatasetSearchDatasetNameRsp
      */
-    datasetIds?: Array<string>;
+    lines?: Array<DatasetSearchDatasetNameLine>;
 }

@@ -16,13 +16,19 @@
  * 
  *
  * @export
- * @interface DatasetQueryDatasetStatusInfoReq
+ * @interface DatasetSearchDatasetNameLine
  */
-export interface DatasetQueryDatasetStatusInfoReq {
+export interface DatasetSearchDatasetNameLine {
 
     /**
-     * @type {Array<string>}
-     * @memberof DatasetQueryDatasetStatusInfoReq
+     * @type {string}
+     * @memberof DatasetSearchDatasetNameLine
      */
-    datasetIds?: Array<string>;
+    datasetId?: string;
+
+    /**
+     * @type {string}
+     * @memberof DatasetSearchDatasetNameLine
+     */
+    datasetName?: string;
 }
