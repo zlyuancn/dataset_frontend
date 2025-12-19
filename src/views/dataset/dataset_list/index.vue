@@ -201,8 +201,8 @@ const reloadRunningDataset = () => {
               size="large"
             >
               <el-radio-button label="可用的" value="0" />
-              <el-radio-button label="未处理" value="1" />
-              <el-radio-button label="处理中" value="2" />
+              <el-radio-button label="未分析" value="1" />
+              <el-radio-button label="分析中" value="2" />
               <el-radio-button label="删除中" value="3" />
             </el-radio-group>
 

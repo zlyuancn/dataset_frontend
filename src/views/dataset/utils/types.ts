@@ -1,5 +1,5 @@
 // 执行类型转中文名
-import { DatasetKV } from "@/api/dataset";
+import { DatasetDatasetExtend, DatasetKV } from "@/api/dataset";
 
 // 状态类型转中文名
 export const Status2CnName = {
@@ -18,11 +18,12 @@ export enum OpSource {
 }
 
 // 数据集表单类型
-export interface DatasetData {
+export interface DatasetFormData {
   datasetId: number; // 数据集id
   datasetName: string; // 数据集名
   remark: string; // 备注
 
-  status: number; // 状态
+  datasetExtend: DatasetDatasetExtend;
+
   opRemark?: string; // 操作备注
 }

@@ -14,7 +14,6 @@
 
 import { DatasetDatasetExtend } from './dataset-dataset-extend';
 import { DatasetOpInfoQ } from './dataset-op-info-q';
-import { DatasetStatus } from './dataset-status';
  /**
  * 
  *
@@ -52,10 +51,4 @@ export interface DatasetAdminUpdateDatasetReq {
      * @memberof DatasetAdminUpdateDatasetReq
      */
     op?: DatasetOpInfoQ;
-
-    /**
-     * @type {DatasetStatus}
-     * @memberof DatasetAdminUpdateDatasetReq
-     */
-    status?: DatasetStatus;
 }
