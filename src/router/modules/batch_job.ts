@@ -31,5 +31,14 @@ export default {
         showLink: false
       }
     },
+    {
+      path: "/Dataset/ViewDataset",
+      name: "ViewDataset",
+      component: () => import("@/views/dataset/create_dataset/index.vue"),
+      meta: {
+        title: "查看数据集",
+        showLink: false
+      }
+    },
   ]
 } as RouteConfigsTable;

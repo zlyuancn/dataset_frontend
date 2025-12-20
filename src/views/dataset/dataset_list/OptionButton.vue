@@ -35,9 +35,9 @@ watch(
     // 变化时的回调
     const status = Number(newVal) ?? 0;
     Object.assign(allowStatus, {
-      allowEdit: status == 0 || status == 5,
-      allowStop: status == 1 || status == 2,
-      allowRun: status == 0 || status == 5
+      allowEdit: !status || status == 3 || status == 5,
+      allowStop: status == 2,
+      allowRun: !status || status == 5
     });
   },
   {
@@ -97,10 +97,10 @@ const handleEdit = () => {
 // 查看
 const handleView = () => {
   console.info(props);
-  // router.push({
-  //   name: "DatasetInfo",
-  //   query: { datasetId: String(props.datasetId) }
-  // });
+  router.push({
+    name: "ViewDataset",
+    query: { datasetId: String(props.datasetId) }
+  });
 };
 </script>
 

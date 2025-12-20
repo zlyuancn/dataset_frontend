@@ -67,7 +67,7 @@ const submitQuery = () => {
   isLoading.value = true;
   const req: DatasetQueryDatasetListReq = {
     pageSize: datasetListQueryArgs.pageSize,
-    datasetId: String(datasetListQueryArgs.datasetId),
+    datasetId: String(datasetListQueryArgs.datasetId || '0'),
     status: datasetListQueryStatusArgsTransform[datasetListQueryArgs.status],
     nextCursor: String(nextPageCursor.value),
     opUser: datasetListQueryArgs.opUser

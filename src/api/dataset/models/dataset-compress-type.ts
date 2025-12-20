@@ -18,7 +18,7 @@
  * @enum {string}
  */
 export enum DatasetCompressType {
-    None = 'CompressorType_None',
-    Lz4 = 'CompressorType_Lz4'
+    NUMBER_0 = 0,
+    NUMBER_1 = 1
 }
 

@@ -18,7 +18,7 @@
  * @enum {string}
  */
 export enum DatasetDataSource {
-    None = 'DataSource_None',
-    UriFile = 'DataSource_UriFile'
+    NUMBER_0 = 0,
+    NUMBER_1 = 1
 }
 

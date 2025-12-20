@@ -13,17 +13,17 @@
  */
 
 /**
- * - Status_Created: 已创建  - Status_Running: 运行中  - Status_Finished: 已完成  - Status_Stopping: 正在停止  - Status_Stopped: 已停止  - Status_Deleting: 正在删除  - Status_ChunkDeleted: 元数据已删除
+ * - 0: 已创建  - 2: 运行中  - 3: 已完成  - 4: 正在停止  - 5: 已停止  - 7: 正在删除  - 8: 元数据已删除
  * @export
  * @enum {string}
  */
 export enum DatasetStatus {
-    Created = 'Status_Created',
-    Running = 'Status_Running',
-    Finished = 'Status_Finished',
-    Stopping = 'Status_Stopping',
-    Stopped = 'Status_Stopped',
-    Deleting = 'Status_Deleting',
-    ChunkDeleted = 'Status_ChunkDeleted'
+    NUMBER_0 = 0,
+    NUMBER_2 = 2,
+    NUMBER_3 = 3,
+    NUMBER_4 = 4,
+    NUMBER_5 = 5,
+    NUMBER_7 = 7,
+    NUMBER_8 = 8
 }
 
