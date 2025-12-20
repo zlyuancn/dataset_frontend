@@ -1,6 +1,18 @@
 .box-frame {
+  position: relative; /* 使内部绝对定位元素相对于它定位 */
   border: 2px dashed var(--el-border-color);
-  border-radius: var(--el-border-radius-base); /* 统一圆角 */
+  border-radius: var(--el-border-radius-base);
   padding: 15px;
   margin: 15px;
+}
+
+.box-label {
+  position: absolute;
+  top: -12px; /* 调整到刚好覆盖边框上边缘 */
+  left: 15px; /* 调整水平位置，可设为 0 或留点间距 */
+  padding: 0 8px;
+  z-index: 1; /* 确保在边框之上 */
+  font-size: var(--el-form-label-font-size); /* 使用Element Plus的变量 */
+  color: var(--el-text-color-regular); /* 使用Element Plus的颜色变量 */
+  font-weight: bold;
 }

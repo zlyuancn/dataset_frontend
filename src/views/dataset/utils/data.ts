@@ -117,7 +117,7 @@ export const dataProcessDataSourceOptions = [
     value: 1,
     label: "uri文件",
     desc: "远程文件"
-  }
+  },
 ];
 
 // 数据处理-uriFile-请求方法
@@ -166,5 +166,6 @@ export const chunkProcessCompressTypeOptions = [
   {
     value: 1,
     label: "Lz4",
+    desc: "LZ4是一种无损数据压缩算法,着重于压缩和解压的速度"
   }
 ];

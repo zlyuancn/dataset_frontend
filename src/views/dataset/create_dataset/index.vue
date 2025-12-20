@@ -26,10 +26,6 @@ import {
 import { datasetClient } from "@/api/dataset_client";
 import Headers from "@/views/dataset/components/Headers/index.vue";
 import iconVideoPlay from "~icons/ep/video-play";
-import iconEdit from "~icons/ep/edit";
-
-console.info("iconVideoPlay", iconVideoPlay);
-console.info("iconEdit", iconEdit);
 
 // 注册业务/修改业务
 defineOptions({
@@ -192,7 +188,7 @@ if (isChange || isView) viewPageInit();
           >用于展示, 让使用者大概知道这个数据集是什么</el-text
         >
       </el-form-item>
-      <el-form-item label="备注">
+      <el-form-item label="数据集备注">
         <el-input
           type="textarea"
           :autosize="{ minRows: 2 }"
@@ -203,10 +199,8 @@ if (isChange || isView) viewPageInit();
       </el-form-item>
 
       <!--数据处理-->
-      <div
-        v-if="Number(formData?.datasetExtend?.dataProcess?.dataSource) == 1"
-        class="box-frame"
-      >
+      <div class="box-frame">
+        <span class="box-label">data处理</span>
         <el-form-item
           label="数据源"
           prop="datasetExtend.dataProcess.dataSource"
@@ -239,15 +233,15 @@ if (isChange || isView) viewPageInit();
           <el-text
             v-if="
               dataProcessDataSourceOptions[
-                formData.datasetExtend?.dataProcess?.dataSource || 0
+                formData.datasetExtend.dataProcess.dataSource - 1
               ]?.desc
             "
             style="color: var(--el-text-color-secondary)"
           >
             {{
               dataProcessDataSourceOptions[
-                formData.datasetExtend.dataProcess.dataSource
-              ].desc
+                formData.datasetExtend.dataProcess.dataSource - 1
+              ]?.desc
             }}</el-text
           >
         </el-form-item>
@@ -256,10 +250,15 @@ if (isChange || isView) viewPageInit();
           v-if="Number(formData?.datasetExtend?.dataProcess?.dataSource) == 1"
           class="box-frame"
         >
+          <span class="box-label">{{
+            dataProcessDataSourceOptions[
+              formData.datasetExtend.dataProcess.dataSource - 1
+            ]?.label
+          }}</span>
           <el-space direction="vertical" alignment="normal" size="small">
             <el-space direction="horizontal" size="small">
               <el-form-item
-                label="uri文件地址"
+                label="文件地址"
                 prop="datasetExtend.dataProcess.uriFile.uri"
               >
                 <el-input
@@ -323,12 +322,10 @@ if (isChange || isView) viewPageInit();
         </div>
       </div>
       <!--chunk持久化-->
-      <div
-        v-if="Number(formData?.datasetExtend?.dataProcess?.dataSource) == 1"
-        class="box-frame"
-      >
+      <div class="box-frame">
+        <span class="box-label">chunk处理</span>
         <el-form-item
-          label="chunk持久化"
+          label="持久化目标"
           prop="datasetExtend.chunkProcess.storeType"
         >
           <el-select
@@ -359,15 +356,15 @@ if (isChange || isView) viewPageInit();
           <el-text
             v-if="
               chunkProcessStoreTypeOptions[
-                formData.datasetExtend?.chunkProcess?.storeType || 0
+                formData.datasetExtend.chunkProcess.storeType-1
               ]?.desc
             "
             style="color: var(--el-text-color-secondary)"
           >
             {{
               chunkProcessStoreTypeOptions[
-                formData.datasetExtend.chunkProcess.storeType
-              ].desc
+                formData.datasetExtend.chunkProcess.storeType-1
+              ]?.desc
             }}</el-text
           >
         </el-form-item>
@@ -390,23 +387,26 @@ if (isChange || isView) viewPageInit();
           </el-select>
           <el-text
             v-if="
-              chunkProcessStoreTypeOptions[
-                formData.datasetExtend?.chunkProcess?.storeType || 0
+              chunkProcessCompressTypeOptions[
+                formData.datasetExtend.chunkProcess.compressType
               ]?.desc
             "
             style="color: var(--el-text-color-secondary)"
           >
             {{
-              chunkProcessStoreTypeOptions[
-                formData.datasetExtend.chunkProcess.storeType
-              ].desc
+              chunkProcessCompressTypeOptions[
+                formData.datasetExtend.chunkProcess.compressType
+              ]?.desc
             }}</el-text
           >
         </el-form-item>
       </div>
       <!--value处理-->
+      <div class="box-frame">
+        <span class="box-label">value处理</span>
+      </div>
 
-      <el-form-item label="操作描述">
+      <el-form-item label="操作备注">
         <el-input
           type="textarea"
           :autosize="{ minRows: 2 }"
@@ -441,7 +441,7 @@ if (isChange || isView) viewPageInit();
         :disabled="isLoading"
         @click="submitChange"
         v-if="isChange"
-        :icon="iconEdit"
+        :icon="iconCheck"
         >修改</el-button
       >
       <el-button @click="router.back()" :icon="iconClose">取消</el-button>
