@@ -7,7 +7,7 @@ import { reactive } from "vue";
 const genDatasetListQueryArgsInitData = () => {
   return {
     pageSize: 15,
-    datasetId: 0,
+    datasetId: "",
     status: "0",
     rangeTime: [],
     nextCursor: 0,
@@ -25,7 +25,7 @@ export const resetDatasetListQueryArgs = () =>
 // 列表查询页中 tab 转 status 参数
 export const datasetListQueryStatusArgsTransform = {
   "0": [3], // 可用的
-  "1": [0, 5], // 未处理
-  "2": [2, 4], // 处理中
+  // "1": [0, 5], // 未处理
+  "2": [0, 2, 4, 5], // 处理中
   "3": [7] // 删除中
 };

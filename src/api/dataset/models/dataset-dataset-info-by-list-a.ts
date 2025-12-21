@@ -44,6 +44,12 @@ export interface DatasetDatasetInfoByListA {
      * @type {string}
      * @memberof DatasetDatasetInfoByListA
      */
+    delim?: string;
+
+    /**
+     * @type {string}
+     * @memberof DatasetDatasetInfoByListA
+     */
     valueTotal?: string;
 
     /**
@@ -69,4 +75,10 @@ export interface DatasetDatasetInfoByListA {
      * @memberof DatasetDatasetInfoByListA
      */
     statusInfo?: string;
+
+    /**
+     * @type {string}
+     * @memberof DatasetDatasetInfoByListA
+     */
+    processedTime?: string;
 }

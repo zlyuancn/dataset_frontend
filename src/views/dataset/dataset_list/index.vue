@@ -10,6 +10,7 @@ import {
 } from "@/api/dataset";
 import { datasetClient } from "@/api/dataset_client";
 import { columnsRule } from "./columns_rule";
+import { runningColumnsRule } from "./running_columns_rule";
 import { Loading } from "@element-plus/icons-vue";
 import { useRouter } from "vue-router";
 import { message } from "@/utils/message";
@@ -56,6 +57,7 @@ function resetQuery(): void {
 }
 function forceQuery(): void {
   queryDataIsChange.value = true;
+  nextPageCursor.value = 0;
   submitQuery();
 }
 const submitQuery = () => {
@@ -133,19 +135,21 @@ onBeforeUnmount(() => {
 // 重新加载处理中的数据集
 let isReloadRunningDataset = false;
 const reloadRunningDataset = () => {
+  if (isReloadRunningDataset) {
+    return;
+  }
+  isReloadRunningDataset = true;
+
   const d2 = data.value.filter(v => {
     let status = Number(v.status || 0);
     return status == 2 || status == 4 || status == 7;
   });
   const ids = d2.map(v => v.datasetId);
   if (ids.length == 0) {
+    isReloadRunningDataset = false;
     return;
   }
 
-  if (isReloadRunningDataset) {
-    return;
-  }
-  isReloadRunningDataset = true;
   const req = <DatasetQueryDatasetStatusInfoReq>{
     datasetIds: ids
   };
@@ -201,8 +205,8 @@ const reloadRunningDataset = () => {
               size="large"
             >
               <el-radio-button label="可用的" value="0" />
-              <el-radio-button label="未分析" value="1" />
-              <el-radio-button label="分析中" value="2" />
+<!--              <el-radio-button label="未处理" value="1" />-->
+              <el-radio-button label="处理中" value="2" />
               <el-radio-button label="删除中" value="3" />
             </el-radio-group>
 
@@ -251,6 +255,15 @@ const reloadRunningDataset = () => {
                   :width="width"
                   :height="height"
                   fixed
+                  v-if="datasetListQueryArgs.status=='0'"
+                />
+                <el-table-v2
+                  :columns="runningColumnsRule"
+                  :data="data"
+                  :width="width"
+                  :height="height"
+                  fixed
+                  v-if="datasetListQueryArgs.status!='0'"
                 />
               </template>
             </el-auto-resizer>

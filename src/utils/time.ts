@@ -1,5 +1,9 @@
 // 秒级时间戳转文本
 export function formatTimestamp(seconds: number): string {
+  if (seconds < 1) {
+    return ''
+  }
+
   const date = new Date(seconds * 1000);
 
   const year = date.getFullYear();

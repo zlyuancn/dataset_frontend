@@ -1,7 +1,7 @@
 import { Columns } from "element-plus";
 import { formatTimestamp } from "@/utils/time";
 
-import { h, ref } from "vue";
+import { h } from "vue";
 import OptionButton from "./OptionButton.vue";
 
 export const columnsRule: Columns<any> = [
@@ -11,6 +11,26 @@ export const columnsRule: Columns<any> = [
     dataKey: "datasetName",
     title: "数据集名",
     width: 200
+  },
+  {
+    key: "valueTotal",
+    dataKey: "valueTotal",
+    title: "value总数",
+    width: 100
+  },
+  {
+    key: "delim",
+    dataKey: "delim",
+    title: "分隔符",
+    width: 100,
+    cellRenderer: ({ cellData: v }) => <el-tag type="primary">{ v }</el-tag>
+  },
+  {
+    key: "processedTime",
+    dataKey: "processedTime",
+    title: "处理完成时间",
+    width: 150,
+    cellRenderer: ({ cellData: v }) => <span>{formatTimestamp(v || 0)}</span>
   },
   {
     key: "createTime",

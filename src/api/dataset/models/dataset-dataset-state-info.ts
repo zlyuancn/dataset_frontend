@@ -63,4 +63,10 @@ export interface DatasetDatasetStateInfo {
      * @memberof DatasetDatasetStateInfo
      */
     op?: DatasetOpInfoA;
+
+    /**
+     * @type {string}
+     * @memberof DatasetDatasetStateInfo
+     */
+    processedTime?: string;
 }

@@ -54,6 +54,7 @@ export const DatasetInfoA2DatasetFormData = (
   line: DatasetDatasetInfoA
 ) => {
   const initData = genDatasetFormInitData()
+  console.info(line?.datasetExtend?.valueProcess?.delim)
   Object.assign(formData, <DatasetFormData>{
     datasetId: Number(line.datasetId || 0),
     datasetName: line.datasetName || "",
@@ -64,7 +65,7 @@ export const DatasetInfoA2DatasetFormData = (
         uriFile: <DatasetDataSourceUriFile>{
           uri: line?.datasetExtend?.dataProcess?.uriFile?.uri || initData.datasetExtend.dataProcess.uriFile.uri,
           headers: line?.datasetExtend?.dataProcess?.uriFile?.headers || initData.datasetExtend.dataProcess.uriFile.headers,
-          insecureSkipVerify: line?.datasetExtend?.dataProcess?.uriFile?.insecureSkipVerify || initData.datasetExtend.dataProcess.uriFile.insecureSkipVerify,
+          insecureSkipVerify: line?.datasetExtend?.dataProcess?.uriFile?.insecureSkipVerify == undefined ? false : line.datasetExtend.dataProcess.uriFile.insecureSkipVerify,
           proxy: line?.datasetExtend?.dataProcess?.uriFile?.proxy || initData.datasetExtend.dataProcess.uriFile.proxy,
           method: line?.datasetExtend?.dataProcess?.uriFile?.method || initData.datasetExtend.dataProcess.uriFile.method,
         }
@@ -75,7 +76,7 @@ export const DatasetInfoA2DatasetFormData = (
       },
       valueProcess: <DatasetValueProcess>{
         delim: line?.datasetExtend?.valueProcess?.delim || initData.datasetExtend.valueProcess.delim,
-        trimSpace: line?.datasetExtend?.valueProcess?.trimSpace || initData.datasetExtend.valueProcess.trimSpace,
+        trimSpace: line?.datasetExtend?.valueProcess?.trimSpace == undefined ? false : line.datasetExtend.valueProcess.trimSpace,
         trimPrefix: line?.datasetExtend?.valueProcess?.trimPrefix || initData.datasetExtend.valueProcess.trimPrefix,
         trimSuffix: line?.datasetExtend?.valueProcess?.trimSuffix || initData.datasetExtend.valueProcess.trimSuffix,
         filterSubString: line?.datasetExtend?.valueProcess?.filterSubString || initData.datasetExtend.valueProcess.filterSubString,
