@@ -1,5 +1,4 @@
-import { reactive } from "vue";
-import { DatasetFormData } from "@/views/dataset/utils/types";
+
 import {
   DatasetChunkProcess,
   DatasetCompressType,
@@ -10,34 +9,11 @@ import {
   DatasetKV,
   DatasetValueProcess
 } from "@/api/dataset";
+import { DatasetFormData } from "./types";
 
-const genDatasetListQueryArgsInitData = () => {
-  return {
-    pageSize: 15,
-    datasetId: 0,
-    status: "0",
-    rangeTime: [],
-    nextCursor: 0,
-    opUser: ""
-  };
-};
+// ------ 表单 ------
 
-// 列表查询页中 tab 转 status 参数
-export const datasetListQueryStatusArgsTransform = {
-  "0": [3], // 可用的
-  "1": [0, 5], // 未处理
-  "2": [2, 4], // 处理中
-  "3": [7] // 删除中
-};
-
-// 数据集列表查询参数
-export const datasetListQueryArgs = reactive(genDatasetListQueryArgsInitData());
-
-// 重置查询参数
-export const resetDatasetListQueryArgs = () =>
-  Object.assign(datasetListQueryArgs, genDatasetListQueryArgsInitData());
-
-// 数据集表单初始化数据
+// 表单初始化数据
 export const genDatasetFormInitData = (): DatasetFormData => {
   return <DatasetFormData>{
     datasetId: 0,
@@ -110,6 +86,8 @@ export const DatasetInfoA2DatasetFormData = (
     opRemark: line?.op?.opRemark || ""
   });
 };
+
+// ------ 页面数据 ------
 
 // 数据处理-数据源类型选项
 export const dataProcessDataSourceOptions = [

@@ -1,5 +1,5 @@
 import { Columns } from "element-plus";
-import { formatTimestamp } from "@/views/dataset/utils/time";
+import { formatTimestamp } from "@/utils/time";
 
 import { h, ref } from "vue";
 import OptionButton from "./OptionButton.vue";

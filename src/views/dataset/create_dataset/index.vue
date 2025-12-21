@@ -4,7 +4,7 @@ import { reactive, ref } from "vue";
 import { message } from "@/utils/message";
 import router from "@/router";
 import { useRoute } from "vue-router";
-import { DatasetFormData, OpSource } from "../utils/types";
+import { DatasetFormData } from "./types";
 import { getToken } from "@/utils/auth";
 
 import iconCheck from "~icons/ep/check";
@@ -15,18 +15,21 @@ import {
   dataProcessDataSourceOptions,
   dataProcessUriFileMethodOptions,
   DatasetInfoA2DatasetFormData,
-  datasetListQueryArgs,
   genDatasetFormInitData
-} from "@/views/dataset/utils/data";
+} from "./data";
 import {
   DatasetAdminAddDatasetReq,
   DatasetAdminUpdateDatasetReq,
   DatasetQueryDatasetInfoReq
 } from "@/api/dataset";
 import { datasetClient } from "@/api/dataset_client";
-import Headers from "@/views/dataset/components/Headers/index.vue";
+import Headers from "@/components/my/Headers/index.vue";
 import iconVideoPlay from "~icons/ep/video-play";
 import { ElInputTag } from "element-plus";
+
+import CollapsibleBox from "@/components/my/CollapsibleBox/index.vue";
+import { OpSource } from "@/views/dataset/utils/types";
+import { datasetListQueryArgs } from "@/views/dataset/dataset_list/data";
 
 // 注册业务/修改业务
 defineOptions({
@@ -200,8 +203,7 @@ if (isChange || isView) viewPageInit();
       </el-form-item>
 
       <!--数据处理-->
-      <div class="box-frame">
-        <span class="box-label">data处理</span>
+      <CollapsibleBox label="data处理">
         <el-form-item
           label="数据源"
           prop="datasetExtend.dataProcess.dataSource"
@@ -247,15 +249,11 @@ if (isChange || isView) viewPageInit();
           >
         </el-form-item>
         <!--数据源-uri文件-->
-        <div
+        <CollapsibleBox
           v-if="Number(formData?.datasetExtend?.dataProcess?.dataSource) == 1"
-          class="box-frame"
+          :label="dataProcessDataSourceOptions[formData.datasetExtend.dataProcess.dataSource - 1]?.label"
+          hide-btn
         >
-          <span class="box-label">{{
-            dataProcessDataSourceOptions[
-              formData.datasetExtend.dataProcess.dataSource - 1
-            ]?.label
-          }}</span>
           <el-space direction="vertical" alignment="normal" size="small">
             <el-space direction="horizontal" size="small">
               <el-form-item
@@ -320,11 +318,10 @@ if (isChange || isView) viewPageInit();
               </el-select>
             </el-form-item>
           </el-space>
-        </div>
-      </div>
+        </CollapsibleBox>
+      </CollapsibleBox>
       <!--chunk持久化-->
-      <div class="box-frame">
-        <span class="box-label">chunk处理</span>
+      <CollapsibleBox label="chunk处理">
         <el-form-item
           label="持久化目标"
           prop="datasetExtend.chunkProcess.storeType"
@@ -401,10 +398,9 @@ if (isChange || isView) viewPageInit();
             }}</el-text
           >
         </el-form-item>
-      </div>
+      </CollapsibleBox>
       <!--value处理-->
-      <div class="box-frame">
-        <span class="box-label">value处理</span>
+      <CollapsibleBox label="value处理">
         <el-form-item label="分隔符" prop="datasetExtend.valueProcess.delim">
           <el-input
             clearable
@@ -463,7 +459,7 @@ if (isChange || isView) viewPageInit();
           >包含该字符串后缀的value会被删除</el-text
           >
         </el-form-item>
-      </div>
+      </CollapsibleBox>
 
       <el-form-item label="操作备注">
         <el-input
@@ -507,7 +503,3 @@ if (isChange || isView) viewPageInit();
     </div>
   </div>
 </template>
-
-<style scoped>
-@import url("@/style/box-frame.css");
-</style>

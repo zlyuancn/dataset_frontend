@@ -1,0 +1,44 @@
+.box-frame {
+  position: relative; /* 必须：用于绝对定位子元素 */
+  border: 2px dashed var(--el-border-color);
+  border-radius: var(--el-border-radius-base);
+  padding: 15px;
+  margin: 15px;
+}
+
+/* 左上角容器：包含文字 + 图标 */
+.box-frame .box-header {
+  position: absolute;
+  top: -12px;
+  left: 15px;
+  display: flex;
+  align-items: center;
+  gap: 4px; /* 文字和图标之间的间距 */
+  padding: 0 8px;
+  z-index: 2;
+}
+
+/* 文字标签：与 el-form-item label 一致 + 粗体 */
+.box-frame .box-label {
+  font-size: var(--el-form-label-font-size, 14px);
+  color: var(--el-text-color-regular, #606266);
+  font-weight: bold;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+/* 控制图标 */
+.box-frame .box-toggle {
+  cursor: pointer;
+  color: var(--el-text-color-primary, #909399);
+  transition: color 0.2s;
+}
+
+.box-frame .box-toggle:hover {
+  color: var(--el-color-primary);
+}
+
+/* 可折叠的内容区域 */
+.box-frame.collapsed .box-content {
+  display: none;
+}

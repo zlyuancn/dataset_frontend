@@ -17,8 +17,8 @@ import {
   datasetListQueryArgs,
   datasetListQueryStatusArgsTransform,
   resetDatasetListQueryArgs
-} from "../utils/data";
-import { date2Timestamp } from "@/views/dataset/utils/time";
+} from "./data";
+import { date2Timestamp } from "@/utils/time";
 import iconSearch from "~icons/ep/search";
 import iconAdd from "~icons/ep/document-add";
 
