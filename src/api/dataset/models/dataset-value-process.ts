@@ -35,32 +35,32 @@ export interface DatasetValueProcess {
     trimSpace?: boolean;
 
     /**
-     * @type {string}
+     * @type {Array<string>}
      * @memberof DatasetValueProcess
      */
-    trimPrefix?: string;
+    trimPrefix?: Array<string>;
 
     /**
-     * @type {string}
+     * @type {Array<string>}
      * @memberof DatasetValueProcess
      */
-    trimSuffix?: string;
+    trimSuffix?: Array<string>;
 
     /**
-     * @type {string}
+     * @type {Array<string>}
      * @memberof DatasetValueProcess
      */
-    filterSubString?: string;
+    filterSubString?: Array<string>;
 
     /**
-     * @type {string}
+     * @type {Array<string>}
      * @memberof DatasetValueProcess
      */
-    filterPrefix?: string;
+    filterPrefix?: Array<string>;
 
     /**
-     * @type {string}
+     * @type {Array<string>}
      * @memberof DatasetValueProcess
      */
-    filterSuffix?: string;
+    filterSuffix?: Array<string>;
 }

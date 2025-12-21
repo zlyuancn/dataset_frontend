@@ -26,6 +26,7 @@ import {
 import { datasetClient } from "@/api/dataset_client";
 import Headers from "@/views/dataset/components/Headers/index.vue";
 import iconVideoPlay from "~icons/ep/video-play";
+import { ElInputTag } from "element-plus";
 
 // 注册业务/修改业务
 defineOptions({
@@ -356,14 +357,14 @@ if (isChange || isView) viewPageInit();
           <el-text
             v-if="
               chunkProcessStoreTypeOptions[
-                formData.datasetExtend.chunkProcess.storeType-1
+                formData.datasetExtend.chunkProcess.storeType - 1
               ]?.desc
             "
             style="color: var(--el-text-color-secondary)"
           >
             {{
               chunkProcessStoreTypeOptions[
-                formData.datasetExtend.chunkProcess.storeType-1
+                formData.datasetExtend.chunkProcess.storeType - 1
               ]?.desc
             }}</el-text
           >
@@ -404,6 +405,64 @@ if (isChange || isView) viewPageInit();
       <!--value处理-->
       <div class="box-frame">
         <span class="box-label">value处理</span>
+        <el-form-item label="分隔符" prop="datasetExtend.valueProcess.delim">
+          <el-input
+            clearable
+            maxlength="32"
+            show-word-limit
+            v-model="formData.datasetExtend.valueProcess.delim"
+            style="width: 400px"
+          />
+          <el-text style="color: var(--el-text-color-secondary)"
+            >分隔符用于确定value的边界</el-text
+          >
+        </el-form-item>
+        <el-form-item label="去掉空字符">
+          <el-switch
+            v-model="formData.datasetExtend.valueProcess.trimSpace"
+            size="large"
+            active-text="将value前后的空字符去掉, 包括 '\t', '\n', '\v', '\f', '\r', ' ', U+0085 (NEL), U+00A0 (NBSP)"
+          />
+        </el-form-item>
+        <el-form-item label="去掉前缀">
+          <el-input-tag
+            v-model="formData.datasetExtend.valueProcess.trimPrefix"
+            placeholder="输入后按Enter添加"
+          />
+        </el-form-item>
+        <el-form-item label="去掉后缀">
+          <el-input-tag
+            v-model="formData.datasetExtend.valueProcess.trimSuffix"
+            placeholder="输入后按Enter添加"
+          />
+        </el-form-item>
+        <el-form-item label="过滤子字符串">
+          <el-input-tag
+            v-model="formData.datasetExtend.valueProcess.filterSubString"
+            placeholder="输入后按Enter添加"
+          />
+          <el-text style="color: var(--el-text-color-secondary)"
+          >包含该字符串的value会被删除</el-text
+          >
+        </el-form-item>
+        <el-form-item label="过滤字符串前缀">
+          <el-input-tag
+            v-model="formData.datasetExtend.valueProcess.filterPrefix"
+            placeholder="输入后按Enter添加"
+          />
+          <el-text style="color: var(--el-text-color-secondary)"
+          >包含该字符串前缀的value会被删除</el-text
+          >
+        </el-form-item>
+        <el-form-item label="过滤子字符串后缀">
+          <el-input-tag
+            v-model="formData.datasetExtend.valueProcess.filterSuffix"
+            placeholder="输入后按Enter添加"
+          />
+          <el-text style="color: var(--el-text-color-secondary)"
+          >包含该字符串后缀的value会被删除</el-text
+          >
+        </el-form-item>
       </div>
 
       <el-form-item label="操作备注">

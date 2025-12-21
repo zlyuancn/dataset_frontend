@@ -15,4 +15,7 @@ export const rules = reactive<FormRules>({
   "datasetExtend.dataProcess.uriFile.uri": [
     { required: true, message: "必填项", trigger: "blur" }
   ],
+  "datasetExtend.valueProcess.delim": [
+    { required: true, message: "必填项", trigger: "blur" }
+  ],
 });

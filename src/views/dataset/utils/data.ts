@@ -59,13 +59,13 @@ export const genDatasetFormInitData = (): DatasetFormData => {
         compressType: DatasetCompressType.NUMBER_0
       },
       valueProcess: <DatasetValueProcess>{
-        delim: "",
+        delim: ",",
         trimSpace: true,
-        trimPrefix: "",
-        trimSuffix: "",
-        filterSubString: "",
-        filterPrefix: "",
-        filterSuffix: ""
+        trimPrefix: [],
+        trimSuffix: [],
+        filterSubString: [],
+        filterPrefix: [],
+        filterSuffix: []
       }
     },
     opRemark: ""
