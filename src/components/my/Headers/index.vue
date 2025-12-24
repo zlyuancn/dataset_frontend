@@ -7,6 +7,7 @@
             v-model="item.k"
             placeholder="请输入Header键名"
             clearable
+            :disabled="disabled"
           ></el-input>
         </el-col>
         <el-col :span="10">
@@ -14,19 +15,20 @@
             v-model="item.v"
             placeholder="请输入Header值"
             clearable
+            :disabled="disabled"
           ></el-input>
         </el-col>
         <el-col :span="4">
           <el-button
             @click="removeHeader(index)"
             :icon="iconMinus"
-            v-if="!readonly"
+            v-if="!disabled"
           />
         </el-col>
       </el-row>
     </div>
 
-    <el-button @click="addHeader" :icon="iconPlus" v-if="!readonly" />
+    <el-button @click="addHeader" :icon="iconPlus" v-if="!disabled" />
   </div>
 </template>
 
@@ -35,7 +37,7 @@ import iconPlus from "~icons/ep/plus";
 import iconMinus from "~icons/ep/minus";
 
 const props = defineProps({
-  readonly: {
+  disabled: {
     type: Boolean,
     default: false
   }

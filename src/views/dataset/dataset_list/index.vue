@@ -34,8 +34,6 @@ const defaultTime = ref<[Date, Date]>([
   new Date(2000, 2, 1, 23, 59, 59)
 ]);
 
-const nextPageCursor = ref(0); // 查询游标
-
 const queryDataIsChange = ref(true);
 watch(datasetListQueryArgs, newV => {
   queryDataIsChange.value = true;
@@ -52,12 +50,10 @@ const router = useRouter();
 
 function resetQuery(): void {
   resetDatasetListQueryArgs();
-  nextPageCursor.value = 0;
   submitQuery();
 }
 function forceQuery(): void {
   queryDataIsChange.value = true;
-  nextPageCursor.value = 0;
   submitQuery();
 }
 const submitQuery = () => {
@@ -68,10 +64,10 @@ const submitQuery = () => {
 
   isLoading.value = true;
   const req: DatasetQueryDatasetListReq = {
+    page: datasetListQueryArgs.page,
     pageSize: datasetListQueryArgs.pageSize,
     datasetId: String(datasetListQueryArgs.datasetId || '0'),
     status: datasetListQueryStatusArgsTransform[datasetListQueryArgs.status],
-    nextCursor: String(nextPageCursor.value),
     opUser: datasetListQueryArgs.opUser
   };
   if (datasetListQueryArgs?.rangeTime.length == 2) {
@@ -98,14 +94,10 @@ const data = ref<Array<DatasetDatasetInfoByListA>>([]);
 // 数据处理
 function processApiData(r: DatasetQueryDatasetListRsp) {
   data.value = r.lines ?? [];
-  if (r?.lines?.length > 0) {
-    nextPageCursor.value = Number(r.lines[r.lines.length - 1].datasetId);
-  }
 }
 
 // 状态变更
 function statusChange() {
-  nextPageCursor.value = 0;
   submitQuery();
 }
 

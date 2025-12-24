@@ -25,6 +25,12 @@ export interface DatasetQueryDatasetListReq {
      * @type {number}
      * @memberof DatasetQueryDatasetListReq
      */
+    page?: number;
+
+    /**
+     * @type {number}
+     * @memberof DatasetQueryDatasetListReq
+     */
     pageSize?: number;
 
     /**
@@ -50,12 +56,6 @@ export interface DatasetQueryDatasetListReq {
      * @memberof DatasetQueryDatasetListReq
      */
     endTime?: string;
-
-    /**
-     * @type {string}
-     * @memberof DatasetQueryDatasetListReq
-     */
-    nextCursor?: string;
 
     /**
      * @type {string}
