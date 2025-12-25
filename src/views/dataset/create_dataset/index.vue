@@ -13,9 +13,9 @@ import {
   chunkProcessStoreTypeOptions,
   dataProcessDataSourceOptions,
   dataProcessUriFileMethodOptions,
+  DatasetFormData,
   DatasetInfoA2DatasetFormData,
   genDatasetFormInitData,
-  DatasetFormData
 } from "./data";
 import {
   DatasetAdminAddDatasetReq,
@@ -24,6 +24,7 @@ import {
 } from "@/api/dataset";
 import { datasetClient } from "@/api/dataset_client";
 import Headers from "@/components/Headers/index.vue";
+import FileSpeedInput from "@/components/FileSpeedInput/index.vue";
 import iconVideoPlay from "~icons/ep/video-play";
 import { ElInputTag } from "element-plus";
 
@@ -70,6 +71,8 @@ const submitCreate = async (createAndProcess: boolean = false) => {
 
     startProcessNow: createAndProcess
   };
+  req.datasetExtend.dataProcess.rateLimit = String(formData.rateLimit);
+  console.log("submit!", formData);
 
   await datasetClient
     .datasetServiceAdminAddDataset(req)
@@ -117,6 +120,8 @@ const submitChange = async () => {
       opRemark: formData.opRemark
     }
   };
+  req.datasetExtend.dataProcess.rateLimit = String(formData.rateLimit);
+  console.log("submit!", formData);
 
   await datasetClient
     .datasetServiceAdminUpdateDataset(req)
@@ -153,6 +158,7 @@ function viewPageInit() {
       } else {
         console.log("query dataset line result", line);
         DatasetInfoA2DatasetFormData(formData, line);
+        allowEditDataExtend.value = (line.status || 0) == 0;
         console.info("query biz update formData", formData);
       }
       isLoading.value = false;
@@ -167,6 +173,7 @@ function viewPageInit() {
 const isChange: boolean = route.name == "ChangeDataset";
 const isView: boolean = route.name == "ViewDataset";
 if (isChange || isView) viewPageInit();
+const allowEditDataExtend = ref(true); // 数据扩展是否允许修改
 </script>
 
 <template>
@@ -210,6 +217,7 @@ if (isChange || isView) viewPageInit();
             v-model="formData.datasetExtend.dataProcess.dataSource"
             placeholder="Select"
             style="width: 240px"
+            :disabled="!allowEditDataExtend"
           >
             <el-option
               v-for="item in dataProcessDataSourceOptions"
@@ -264,11 +272,13 @@ if (isChange || isView) viewPageInit();
                   v-model="formData.datasetExtend.dataProcess.uriFile.uri"
                   style="width: 600px"
                   clearable
+                  :disabled="!allowEditDataExtend"
                 />
               </el-form-item>
             </el-space>
             <el-form-item label="Headers">
               <Headers
+                :disabled="!allowEditDataExtend"
                 v-model="formData.datasetExtend.dataProcess.uriFile.headers"
               ></Headers>
             </el-form-item>
@@ -279,6 +289,7 @@ if (isChange || isView) viewPageInit();
                 "
                 size="large"
                 active-text="启用不安全的连接时不会验证https证书"
+                :disabled="!allowEditDataExtend"
               />
             </el-form-item>
             <el-form-item label="代理">
@@ -288,6 +299,7 @@ if (isChange || isView) viewPageInit();
                 v-model="formData.datasetExtend.dataProcess.uriFile.proxy"
                 style="width: 800px"
                 clearable
+                :disabled="!allowEditDataExtend"
               />
               <el-text style="color: var(--el-text-color-secondary)"
                 >支持 http, https, socks5, socks5h. 示例: https://127.0.0.1:1080
@@ -302,6 +314,7 @@ if (isChange || isView) viewPageInit();
                 v-model="formData.datasetExtend.dataProcess.uriFile.method"
                 placeholder="Select"
                 style="width: 240px"
+                :disabled="!allowEditDataExtend"
               >
                 <el-option
                   v-for="item in dataProcessUriFileMethodOptions"
@@ -317,6 +330,26 @@ if (isChange || isView) viewPageInit();
             </el-form-item>
           </el-space>
         </CollapsibleBox>
+        <el-form-item label="去除Utf8Bom">
+          <el-switch
+            v-model="formData.datasetExtend.dataProcess.trimUtf8Bom"
+            size="large"
+            active-text="去掉Utf8Bom文件头, 在数据处理中通常是有效的"
+            :disabled="!allowEditDataExtend"
+          />
+        </el-form-item>
+        <el-form-item label="每秒速率(字节/s)" prop="rate_sec">
+          <el-space direction="horizontal" size="large">
+            <FileSpeedInput
+              v-model="formData.rateLimit"
+              :precision="0"
+              :disabled="!allowEditDataExtend"
+            />
+            <el-text style="color: var(--el-text-color-secondary)"
+              >数据每秒处理速度, 0表示不限速</el-text
+            >
+          </el-space>
+        </el-form-item>
       </CollapsibleBox>
       <!--chunk持久化-->
       <CollapsibleBox label="chunk处理">
@@ -328,6 +361,7 @@ if (isChange || isView) viewPageInit();
             v-model="formData.datasetExtend.chunkProcess.storeType"
             placeholder="Select"
             style="width: 240px"
+            :disabled="!allowEditDataExtend"
           >
             <el-option
               v-for="item in chunkProcessStoreTypeOptions"
@@ -369,6 +403,7 @@ if (isChange || isView) viewPageInit();
             v-model="formData.datasetExtend.chunkProcess.compressType"
             placeholder="Select"
             style="width: 240px"
+            :disabled="!allowEditDataExtend"
           >
             <el-option
               v-for="item in chunkProcessCompressTypeOptions"
@@ -406,6 +441,7 @@ if (isChange || isView) viewPageInit();
             show-word-limit
             v-model="formData.datasetExtend.valueProcess.delim"
             style="width: 400px"
+            :disabled="!allowEditDataExtend"
           />
           <el-text style="color: var(--el-text-color-secondary)"
             >分隔符用于确定value的边界</el-text
@@ -416,45 +452,51 @@ if (isChange || isView) viewPageInit();
             v-model="formData.datasetExtend.valueProcess.trimSpace"
             size="large"
             active-text="将value前后的空字符去掉, 包括 '\t', '\n', '\v', '\f', '\r', ' ', U+0085 (NEL), U+00A0 (NBSP)"
+            :disabled="!allowEditDataExtend"
           />
         </el-form-item>
         <el-form-item label="去掉前缀">
           <el-input-tag
             v-model="formData.datasetExtend.valueProcess.trimPrefix"
             placeholder="输入后按Enter添加"
+            :disabled="!allowEditDataExtend"
           />
         </el-form-item>
         <el-form-item label="去掉后缀">
           <el-input-tag
             v-model="formData.datasetExtend.valueProcess.trimSuffix"
             placeholder="输入后按Enter添加"
+              :disabled="!allowEditDataExtend"
           />
         </el-form-item>
         <el-form-item label="过滤子字符串">
           <el-input-tag
             v-model="formData.datasetExtend.valueProcess.filterSubString"
             placeholder="输入后按Enter添加"
+              :disabled="!allowEditDataExtend"
           />
           <el-text style="color: var(--el-text-color-secondary)"
-          >包含该字符串的value会被删除</el-text
+            >包含该字符串的value会被删除</el-text
           >
         </el-form-item>
         <el-form-item label="过滤字符串前缀">
           <el-input-tag
             v-model="formData.datasetExtend.valueProcess.filterPrefix"
             placeholder="输入后按Enter添加"
+              :disabled="!allowEditDataExtend"
           />
           <el-text style="color: var(--el-text-color-secondary)"
-          >包含该字符串前缀的value会被删除</el-text
+            >包含该字符串前缀的value会被删除</el-text
           >
         </el-form-item>
         <el-form-item label="过滤子字符串后缀">
           <el-input-tag
             v-model="formData.datasetExtend.valueProcess.filterSuffix"
             placeholder="输入后按Enter添加"
+              :disabled="!allowEditDataExtend"
           />
           <el-text style="color: var(--el-text-color-secondary)"
-          >包含该字符串后缀的value会被删除</el-text
+            >包含该字符串后缀的value会被删除</el-text
           >
         </el-form-item>
       </CollapsibleBox>

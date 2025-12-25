@@ -1,4 +1,3 @@
-
 import {
   DatasetChunkProcess,
   DatasetCompressType,
@@ -12,12 +11,14 @@ import {
 
 // ------ 表单 ------
 
+// 数据集表单类型
 export interface DatasetFormData {
   datasetId: number; // 数据集id
   datasetName: string; // 数据集名
   remark: string; // 备注
 
   datasetExtend: DatasetDatasetExtend;
+  rateLimit: number // 处理速率. 这是为了处理 FileSpeedInput 组件接收一个 number 类型, 而 datasetExtend.dataProcess.rateLimit 是一个 string 类型
 
   opRemark?: string; // 操作备注
 }
@@ -37,7 +38,9 @@ export const genDatasetFormInitData = (): DatasetFormData => {
           insecureSkipVerify: false,
           proxy: "",
           method: "GET"
-        }
+        },
+        trimUtf8Bom: true,
+        rateLimit: "0",
       },
       chunkProcess: <DatasetChunkProcess>{
         storeType: 1,
@@ -53,6 +56,7 @@ export const genDatasetFormInitData = (): DatasetFormData => {
         filterSuffix: []
       }
     },
+    rateLimit: 0,
     opRemark: ""
   };
 };
@@ -76,7 +80,9 @@ export const DatasetInfoA2DatasetFormData = (
           insecureSkipVerify: line?.datasetExtend?.dataProcess?.uriFile?.insecureSkipVerify || false,
           proxy: line?.datasetExtend?.dataProcess?.uriFile?.proxy || initData.datasetExtend.dataProcess.uriFile.proxy,
           method: line?.datasetExtend?.dataProcess?.uriFile?.method || initData.datasetExtend.dataProcess.uriFile.method,
-        }
+        },
+        trimUtf8Bom: line?.datasetExtend?.dataProcess?.trimUtf8Bom || false,
+        rateLimit: line?.datasetExtend?.dataProcess?.rateLimit || "0",
       },
       chunkProcess: <DatasetChunkProcess>{
         storeType: line?.datasetExtend?.chunkProcess?.storeType || initData.datasetExtend.chunkProcess.storeType,
@@ -92,6 +98,7 @@ export const DatasetInfoA2DatasetFormData = (
         filterSuffix: line?.datasetExtend?.valueProcess?.filterSuffix || initData.datasetExtend.valueProcess.filterSuffix
       }
     },
+    rateLimit: Number(line?.datasetExtend?.dataProcess?.rateLimit || 0),
     opRemark: line?.op?.opRemark || ""
   });
 };

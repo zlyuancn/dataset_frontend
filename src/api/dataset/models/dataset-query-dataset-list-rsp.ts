@@ -22,10 +22,10 @@ import { DatasetDatasetInfoByListA } from './dataset-dataset-info-by-list-a';
 export interface DatasetQueryDatasetListRsp {
 
     /**
-     * @type {string}
+     * @type {number}
      * @memberof DatasetQueryDatasetListRsp
      */
-    nextCursor?: string;
+    total?: number;
 
     /**
      * @type {Array<DatasetDatasetInfoByListA>}

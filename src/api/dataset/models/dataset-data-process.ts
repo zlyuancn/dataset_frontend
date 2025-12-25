@@ -33,4 +33,16 @@ export interface DatasetDataProcess {
      * @memberof DatasetDataProcess
      */
     uriFile?: DatasetDataSourceUriFile;
+
+    /**
+     * @type {boolean}
+     * @memberof DatasetDataProcess
+     */
+    trimUtf8Bom?: boolean;
+
+    /**
+     * @type {string}
+     * @memberof DatasetDataProcess
+     */
+    rateLimit?: string;
 }
