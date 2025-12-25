@@ -8,6 +8,7 @@ const genDatasetListQueryArgsInitData = () => {
   return {
     page: 1,
     pageSize: 15,
+    dataTotal: 0,
     datasetId: "",
     status: "0",
     rangeTime: [],

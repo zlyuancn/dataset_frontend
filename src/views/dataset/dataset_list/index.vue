@@ -66,7 +66,7 @@ const submitQuery = () => {
   const req: DatasetQueryDatasetListReq = {
     page: datasetListQueryArgs.page,
     pageSize: datasetListQueryArgs.pageSize,
-    datasetId: String(datasetListQueryArgs.datasetId || '0'),
+    datasetId: String(datasetListQueryArgs.datasetId || "0"),
     status: datasetListQueryStatusArgsTransform[datasetListQueryArgs.status],
     opUser: datasetListQueryArgs.opUser
   };
@@ -94,6 +94,9 @@ const data = ref<Array<DatasetDatasetInfoByListA>>([]);
 // 数据处理
 function processApiData(r: DatasetQueryDatasetListRsp) {
   data.value = r.lines ?? [];
+  if (datasetListQueryArgs.page == 1) {
+    datasetListQueryArgs.dataTotal = r.total ?? 0;
+  }
 }
 
 // 状态变更
@@ -197,7 +200,7 @@ const reloadRunningDataset = () => {
               size="large"
             >
               <el-radio-button label="可用的" value="0" />
-<!--              <el-radio-button label="未处理" value="1" />-->
+              <!--              <el-radio-button label="未处理" value="1" />-->
               <el-radio-button label="处理中" value="2" />
               <el-radio-button label="删除中" value="3" />
             </el-radio-group>
@@ -247,7 +250,7 @@ const reloadRunningDataset = () => {
                   :width="width"
                   :height="height"
                   fixed
-                  v-if="datasetListQueryArgs.status=='0'"
+                  v-if="datasetListQueryArgs.status == '0'"
                 />
                 <el-table-v2
                   :columns="runningColumnsRule"
@@ -255,12 +258,26 @@ const reloadRunningDataset = () => {
                   :width="width"
                   :height="height"
                   fixed
-                  v-if="datasetListQueryArgs.status!='0'"
+                  v-if="datasetListQueryArgs.status != '0'"
                 />
               </template>
             </el-auto-resizer>
           </div>
         </el-main>
+        <el-footer class="py-3">
+          <!-- 底部区域保持固定高度 -->
+          <el-pagination
+            v-model:current-page="datasetListQueryArgs.page"
+            v-model:page-size="datasetListQueryArgs.pageSize"
+            background
+            layout="total, prev, pager, next, sizes, jumper"
+            :page-sizes="[20, 50, 100]"
+            @size-change="submitQuery"
+            @current-change="submitQuery"
+            :total="datasetListQueryArgs.dataTotal"
+            :disabled="isLoading"
+          />
+        </el-footer>
       </el-container>
     </div>
   </div>
