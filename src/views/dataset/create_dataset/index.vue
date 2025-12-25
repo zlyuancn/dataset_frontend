@@ -4,7 +4,6 @@ import { reactive, ref } from "vue";
 import { message } from "@/utils/message";
 import router from "@/router";
 import { useRoute } from "vue-router";
-import { DatasetFormData } from "./types";
 import { getToken } from "@/utils/auth";
 
 import iconCheck from "~icons/ep/check";
@@ -15,7 +14,8 @@ import {
   dataProcessDataSourceOptions,
   dataProcessUriFileMethodOptions,
   DatasetInfoA2DatasetFormData,
-  genDatasetFormInitData
+  genDatasetFormInitData,
+  DatasetFormData
 } from "./data";
 import {
   DatasetAdminAddDatasetReq,
@@ -23,11 +23,11 @@ import {
   DatasetQueryDatasetInfoReq
 } from "@/api/dataset";
 import { datasetClient } from "@/api/dataset_client";
-import Headers from "@/components/my/Headers/index.vue";
+import Headers from "@/components/Headers/index.vue";
 import iconVideoPlay from "~icons/ep/video-play";
 import { ElInputTag } from "element-plus";
 
-import CollapsibleBox from "@/components/my/CollapsibleBox/index.vue";
+import CollapsibleBox from "@/components/CollapsibleBox/index.vue";
 import { OpSource } from "@/views/dataset/utils/types";
 import { datasetListQueryArgs } from "@/views/dataset/dataset_list/data";
 
@@ -87,10 +87,8 @@ const submitCreate = async (createAndProcess: boolean = false) => {
       console.log(err);
       const errMsg = err?.response?.data?.message ?? err;
       message("创建失败\n" + errMsg, { type: "error" });
-    })
-    .finally(() => {
-      isLoading.value = false;
     });
+  isLoading.value = false;
 };
 // 修改
 const submitChange = async () => {
@@ -165,7 +163,7 @@ function viewPageInit() {
     });
 }
 
-// 对于修改数据, 使用服务端的数据填充
+// 对于查看数据, 使用服务端的数据填充
 const isChange: boolean = route.name == "ChangeDataset";
 const isView: boolean = route.name == "ViewDataset";
 if (isChange || isView) viewPageInit();
@@ -251,7 +249,7 @@ if (isChange || isView) viewPageInit();
         <!--数据源-uri文件-->
         <CollapsibleBox
           v-if="Number(formData?.datasetExtend?.dataProcess?.dataSource) == 1"
-          :label="dataProcessDataSourceOptions[formData.datasetExtend.dataProcess.dataSource - 1]?.label"
+          label="uri文件"
           hide-btn
         >
           <el-space direction="vertical" alignment="normal" size="small">
