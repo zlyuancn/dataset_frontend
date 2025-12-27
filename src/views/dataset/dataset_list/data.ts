@@ -7,7 +7,7 @@ import { reactive } from "vue";
 const genDatasetListQueryArgsInitData = () => {
   return {
     page: 1,
-    pageSize: 15,
+    pageSize: 20,
     dataTotal: 0,
     datasetId: "",
     status: "0",

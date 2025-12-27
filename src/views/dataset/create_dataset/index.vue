@@ -25,6 +25,7 @@ import {
 import { datasetClient } from "@/api/dataset_client";
 import Headers from "@/components/Headers/index.vue";
 import FileSpeedInput from "@/components/FileSpeedInput/index.vue";
+import TestGetValue from "./TestGetValue.vue"
 import iconVideoPlay from "~icons/ep/video-play";
 import { ElInputTag } from "element-plus";
 
@@ -159,6 +160,7 @@ function viewPageInit() {
         console.log("query dataset line result", line);
         DatasetInfoA2DatasetFormData(formData, line);
         allowEditDataExtend.value = (line.status || 0) == 0;
+        datasetData.value = line;
         console.info("query biz update formData", formData);
       }
       isLoading.value = false;
@@ -174,6 +176,8 @@ const isChange: boolean = route.name == "ChangeDataset";
 const isView: boolean = route.name == "ViewDataset";
 if (isChange || isView) viewPageInit();
 const allowEditDataExtend = ref(true); // 数据扩展是否允许修改
+const datasetData = ref({}); // 数据集数据
+
 </script>
 
 <template>
@@ -200,7 +204,7 @@ const allowEditDataExtend = ref(true); // 数据扩展是否允许修改
       <el-form-item label="数据集备注">
         <el-input
           type="textarea"
-          :autosize="{ minRows: 2 }"
+          :autosize="{ minRows: 3 }"
           :maxlength="1000"
           show-word-limit
           v-model="formData.remark"
@@ -504,7 +508,7 @@ const allowEditDataExtend = ref(true); // 数据扩展是否允许修改
       <el-form-item label="操作备注">
         <el-input
           type="textarea"
-          :autosize="{ minRows: 2 }"
+          :autosize="{ minRows: 3 }"
           :maxlength="1000"
           show-word-limit
           v-model="formData.opRemark"
@@ -540,6 +544,10 @@ const allowEditDataExtend = ref(true); // 数据扩展是否允许修改
         >修改</el-button
       >
       <el-button @click="router.back()" :icon="iconClose">取消</el-button>
+    </div>
+
+    <div>
+      <TestGetValue v-if="isView && datasetData.status == 3" :datasetData="datasetData" />
     </div>
   </div>
 </template>

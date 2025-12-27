@@ -82,6 +82,7 @@ const submitQuery = () => {
     })
     .catch(err => {
       const errMsg = err?.response?.data?.message ?? err;
+      data.value = [];
       message("数据获取失败\n" + errMsg, { type: "error" });
     })
     .finally(() => {
@@ -97,6 +98,9 @@ function processApiData(r: DatasetQueryDatasetListRsp) {
   if (datasetListQueryArgs.page == 1) {
     datasetListQueryArgs.dataTotal = r.total ?? 0;
   }
+
+  // 对于非完成状态的立即查询一次数据状态
+  isReloadAll = true;
 }
 
 // 状态变更
@@ -129,6 +133,7 @@ onBeforeUnmount(() => {
 
 // 重新加载处理中的数据集
 let isReloadRunningDataset = false;
+let isReloadAll = false;
 const reloadRunningDataset = () => {
   if (isReloadRunningDataset) {
     return;
@@ -137,8 +142,9 @@ const reloadRunningDataset = () => {
 
   const d2 = data.value.filter(v => {
     let status = Number(v.status || 0);
-    return status == 2 || status == 4 || status == 7;
+    return (isReloadAll && status != 0 && status != 3) || status == 2 || status == 4 || status == 7;
   });
+  isReloadAll = false
   const ids = d2.map(v => v.datasetId);
   if (ids.length == 0) {
     isReloadRunningDataset = false;
