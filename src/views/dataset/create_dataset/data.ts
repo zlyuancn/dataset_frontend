@@ -44,7 +44,7 @@ export const genDatasetFormInitData = (): DatasetFormData => {
       },
       chunkProcess: <DatasetChunkProcess>{
         storeType: 1,
-        compressType: DatasetCompressType.NUMBER_0
+        compressType: DatasetCompressType.NUMBER_1
       },
       valueProcess: <DatasetValueProcess>{
         delim: ",",
@@ -66,36 +66,35 @@ export const DatasetInfoA2DatasetFormData = (
   formData: DatasetFormData,
   line: DatasetDatasetInfoA
 ) => {
-  const initData = genDatasetFormInitData()
   Object.assign(formData, <DatasetFormData>{
     datasetId: Number(line.datasetId || 0),
     datasetName: line.datasetName || "",
     remark: line.remark || "",
     datasetExtend: <DatasetDatasetExtend>{
       dataProcess: <DatasetDataProcess>{
-        dataSource: line?.datasetExtend?.dataProcess?.dataSource || initData.datasetExtend.dataProcess.dataSource,
+        dataSource: line?.datasetExtend?.dataProcess?.dataSource || 0,
         uriFile: <DatasetDataSourceUriFile>{
-          uri: line?.datasetExtend?.dataProcess?.uriFile?.uri || initData.datasetExtend.dataProcess.uriFile.uri,
-          headers: line?.datasetExtend?.dataProcess?.uriFile?.headers || initData.datasetExtend.dataProcess.uriFile.headers,
+          uri: line?.datasetExtend?.dataProcess?.uriFile?.uri || '',
+          headers: line?.datasetExtend?.dataProcess?.uriFile?.headers || [],
           insecureSkipVerify: line?.datasetExtend?.dataProcess?.uriFile?.insecureSkipVerify || false,
-          proxy: line?.datasetExtend?.dataProcess?.uriFile?.proxy || initData.datasetExtend.dataProcess.uriFile.proxy,
-          method: line?.datasetExtend?.dataProcess?.uriFile?.method || initData.datasetExtend.dataProcess.uriFile.method,
+          proxy: line?.datasetExtend?.dataProcess?.uriFile?.proxy || '',
+          method: line?.datasetExtend?.dataProcess?.uriFile?.method || 'GET',
         },
         trimUtf8Bom: line?.datasetExtend?.dataProcess?.trimUtf8Bom || false,
         rateLimit: line?.datasetExtend?.dataProcess?.rateLimit || "0",
       },
       chunkProcess: <DatasetChunkProcess>{
-        storeType: line?.datasetExtend?.chunkProcess?.storeType || initData.datasetExtend.chunkProcess.storeType,
-        compressType: line?.datasetExtend?.chunkProcess?.compressType || initData.datasetExtend.chunkProcess.compressType
+        storeType: line?.datasetExtend?.chunkProcess?.storeType || 0,
+        compressType: line?.datasetExtend?.chunkProcess?.compressType || 0
       },
       valueProcess: <DatasetValueProcess>{
-        delim: line?.datasetExtend?.valueProcess?.delim || initData.datasetExtend.valueProcess.delim,
+        delim: line?.datasetExtend?.valueProcess?.delim || '',
         trimSpace: line?.datasetExtend?.valueProcess?.trimSpace || false,
-        trimPrefix: line?.datasetExtend?.valueProcess?.trimPrefix || initData.datasetExtend.valueProcess.trimPrefix,
-        trimSuffix: line?.datasetExtend?.valueProcess?.trimSuffix || initData.datasetExtend.valueProcess.trimSuffix,
-        filterSubString: line?.datasetExtend?.valueProcess?.filterSubString || initData.datasetExtend.valueProcess.filterSubString,
-        filterPrefix: line?.datasetExtend?.valueProcess?.filterPrefix || initData.datasetExtend.valueProcess.filterPrefix,
-        filterSuffix: line?.datasetExtend?.valueProcess?.filterSuffix || initData.datasetExtend.valueProcess.filterSuffix
+        trimPrefix: line?.datasetExtend?.valueProcess?.trimPrefix || [],
+        trimSuffix: line?.datasetExtend?.valueProcess?.trimSuffix || [],
+        filterSubString: line?.datasetExtend?.valueProcess?.filterSubString || [],
+        filterPrefix: line?.datasetExtend?.valueProcess?.filterPrefix || [],
+        filterSuffix: line?.datasetExtend?.valueProcess?.filterSuffix || []
       }
     },
     rateLimit: Number(line?.datasetExtend?.dataProcess?.rateLimit || 0),
