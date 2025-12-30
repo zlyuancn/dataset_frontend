@@ -22,6 +22,7 @@ import {
 import { date2Timestamp } from "@/utils/time";
 import iconSearch from "~icons/ep/search";
 import iconAdd from "~icons/ep/document-add";
+import { ElAutoResizer } from "element-plus";
 
 // 数据集列表
 defineOptions({
@@ -173,6 +174,38 @@ const reloadRunningDataset = () => {
       isReloadRunningDataset = false;
     });
 };
+
+// 数据集搜索
+let searchDebounceTimer = null // 防抖定时器
+const searchDatasetOptions = ref([]) // 选项
+const searchDatasetLoading = ref(false)
+const handleSearchDataset = (query) => {
+  // 清除上一次的定时器
+  if (searchDebounceTimer) {
+    clearTimeout(searchDebounceTimer)
+  }
+
+  // 如果输入为空，清空选项
+  if (!query.trim()) {
+    searchDatasetOptions.value = []
+    return
+  }
+
+  // 设置新的防抖定时器（1秒后执行）
+  searchDebounceTimer = setTimeout(async () => {
+    searchDatasetLoading.value = true
+    datasetClient.datasetServiceSearchDatasetName({
+      datasetName: query.trim(),
+      pageSize: 10,
+    }, { closeNProgress: true })
+      .then(res => {
+        searchDatasetOptions.value = res?.data?.lines;
+      })
+      .finally(()=>{
+        searchDatasetLoading.value = false
+      })
+  }, 500) // 毫秒 防抖
+}
 </script>
 
 <template>
@@ -215,10 +248,19 @@ const reloadRunningDataset = () => {
               v-model="datasetListQueryArgs.datasetId"
               filterable
               clearable
-              placeholder="数据集搜索"
-              style="width: 240px"
+              remote
+              placeholder="数据集搜索, 输入前缀"
+              style="width: 300px"
+              :loading="searchDatasetLoading"
+              :remote-method="handleSearchDataset"
               @change="submitQuery"
             >
+              <el-option
+                v-for="item in searchDatasetOptions"
+                :key="item.datasetId"
+                :value="item.datasetId"
+                :label="`${item.datasetId} - ${item.datasetName}`"
+              />
             </el-select>
             <el-input
               v-model="datasetListQueryArgs.opUser"
