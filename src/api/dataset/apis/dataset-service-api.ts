@@ -35,6 +35,8 @@ import { DatasetQueryDatasetListReq } from '../models';
 import { DatasetQueryDatasetListRsp } from '../models';
 import { DatasetQueryDatasetStatusInfoReq } from '../models';
 import { DatasetQueryDatasetStatusInfoRsp } from '../models';
+import { DatasetQuerySyslogReq } from '../models';
+import { DatasetQuerySyslogRsp } from '../models';
 import { DatasetSearchDatasetNameReq } from '../models';
 import { DatasetSearchDatasetNameRsp } from '../models';
 import { GooglerpcStatus } from '../models';
@@ -433,6 +435,49 @@ export const DatasetServiceApiAxiosParamCreator = function (configuration?: Conf
         },
         /**
          * 
+         * @summary 查询sys日志
+         * @param {DatasetQuerySyslogReq} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        datasetServiceQuerySyslog: async (body: DatasetQuerySyslogReq, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            if (body === null || body === undefined) {
+                throw new RequiredError('body','Required parameter body was null or undefined when calling datasetServiceQuerySyslog.');
+            }
+            const localVarPath = `/Dataset/QuerySyslog`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, 'https://example.com');
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions :AxiosRequestConfig = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            const query = new URLSearchParams(localVarUrlObj.search);
+            for (const key in localVarQueryParameter) {
+                query.set(key, localVarQueryParameter[key]);
+            }
+            for (const key in options.params) {
+                query.set(key, options.params[key]);
+            }
+            localVarUrlObj.search = (new URLSearchParams(query)).toString();
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            const needsSerialization = (typeof body !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
+            localVarRequestOptions.data =  needsSerialization ? JSON.stringify(body !== undefined ? body : {}) : (body || "");
+
+            return {
+                url: localVarUrlObj.pathname + localVarUrlObj.search + localVarUrlObj.hash,
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary 搜索数据集名
          * @param {DatasetSearchDatasetNameReq} body 
          * @param {*} [options] Override http request option.
@@ -611,6 +656,20 @@ export const DatasetServiceApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary 查询sys日志
+         * @param {DatasetQuerySyslogReq} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async datasetServiceQuerySyslog(body: DatasetQuerySyslogReq, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => Promise<AxiosResponse<DatasetQuerySyslogRsp>>> {
+            const localVarAxiosArgs = await DatasetServiceApiAxiosParamCreator(configuration).datasetServiceQuerySyslog(body, options);
+            return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
+                const axiosRequestArgs :AxiosRequestConfig = {...localVarAxiosArgs.options, url: basePath + localVarAxiosArgs.url};
+                return axios.request(axiosRequestArgs);
+            };
+        },
+        /**
+         * 
          * @summary 搜索数据集名
          * @param {DatasetSearchDatasetNameReq} body 
          * @param {*} [options] Override http request option.
@@ -721,6 +780,16 @@ export const DatasetServiceApiFactory = function (configuration?: Configuration,
          */
         async datasetServiceQueryDatasetStatusInfo(body: DatasetQueryDatasetStatusInfoReq, options?: AxiosRequestConfig): Promise<AxiosResponse<DatasetQueryDatasetStatusInfoRsp>> {
             return DatasetServiceApiFp(configuration).datasetServiceQueryDatasetStatusInfo(body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 查询sys日志
+         * @param {DatasetQuerySyslogReq} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async datasetServiceQuerySyslog(body: DatasetQuerySyslogReq, options?: AxiosRequestConfig): Promise<AxiosResponse<DatasetQuerySyslogRsp>> {
+            return DatasetServiceApiFp(configuration).datasetServiceQuerySyslog(body, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -840,6 +909,17 @@ export class DatasetServiceApi extends BaseAPI {
      */
     public async datasetServiceQueryDatasetStatusInfo(body: DatasetQueryDatasetStatusInfoReq, options?: AxiosRequestConfig) : Promise<AxiosResponse<DatasetQueryDatasetStatusInfoRsp>> {
         return DatasetServiceApiFp(this.configuration).datasetServiceQueryDatasetStatusInfo(body, options).then((request) => request(this.axios, this.basePath));
+    }
+    /**
+     * 
+     * @summary 查询sys日志
+     * @param {DatasetQuerySyslogReq} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DatasetServiceApi
+     */
+    public async datasetServiceQuerySyslog(body: DatasetQuerySyslogReq, options?: AxiosRequestConfig) : Promise<AxiosResponse<DatasetQuerySyslogRsp>> {
+        return DatasetServiceApiFp(this.configuration).datasetServiceQuerySyslog(body, options).then((request) => request(this.axios, this.basePath));
     }
     /**
      * 
