@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { DatasetDatasetInfoA } from "@/api/dataset/index.js";
+import { DatasetDatasetInfoA } from "@/api/dataset";
 import CollapsibleBox from "@/components/CollapsibleBox/index.vue";
 import { datasetClient } from "@/api/dataset_client";
 import { message } from "@/utils/message";
-import { datasetListQueryArgs } from "@/views/dataset/dataset_list/data";
-import router from "@/router";
 
 // 使用类型声明方式定义 props
 const props = defineProps<{
@@ -17,7 +15,7 @@ const isLoading = ref(false);
 const valueSn = ref(0);
 const valueSnResult = ref("");
 const debugData = ref({})
-async function submitQueryValue(): void {
+async function submitQueryValue() {
   isLoading.value = true;
   await datasetClient
     .datasetServiceQueryDatasetData({
@@ -26,7 +24,7 @@ async function submitQueryValue(): void {
     })
     .then(result => {
       console.log(result, result?.data);
-      message("查询成功", { type: "success" });
+      message("查询value成功", { type: "success" });
       let d = {
         datasetId: result?.data?.datasetId,
         chunkSn: result?.data?.chunkSn || 0,
@@ -39,21 +37,21 @@ async function submitQueryValue(): void {
     .catch(err => {
       console.log(err);
       const errMsg = err?.response?.data?.message ?? err;
-      message("查询失败\n" + errMsg, { type: "error" });
+      message("查询value失败\n" + errMsg, { type: "error" });
     });
   isLoading.value = false;
 }
 </script>
 
 <template>
-  <CollapsibleBox label="工具" hide-btn>
-    {{ datasetData.datasetId }}
+  <CollapsibleBox label="value查询工具" hide-btn>
     <el-form-item label="valueSn">
       <el-input-number
         :min="0"
         :max="datasetData?.valueTotal - 1"
         v-model="valueSn"
         style="width: 300px"
+        :disabled="isLoading"
       />
       <el-button
         type="primary"
@@ -67,6 +65,7 @@ async function submitQueryValue(): void {
       <el-input
         v-model="valueSnResult"
         type="textarea"
+        readonly
         :autosize="{ minRows: 3 }"
       />
     </el-form-item>

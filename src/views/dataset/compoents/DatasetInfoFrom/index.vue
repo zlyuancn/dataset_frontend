@@ -82,7 +82,7 @@ const formData = computed({
           v-model="formData.datasetExtend.dataProcess.dataSource"
           placeholder="Select"
           style="width: 240px"
-          :disabled="!allowEditDataExtend"
+          :disabled="disable || !allowEditDataExtend"
         >
           <el-option
             v-for="item in dataProcessDataSourceOptions"
@@ -137,13 +137,13 @@ const formData = computed({
                 v-model="formData.datasetExtend.dataProcess.uriFile.uri"
                 style="width: 600px"
                 clearable
-                :disabled="!allowEditDataExtend"
+                :disabled="disable || !allowEditDataExtend"
               />
             </el-form-item>
           </el-space>
           <el-form-item label="Headers">
             <Headers
-              :disabled="!allowEditDataExtend"
+              :disabled="disable || !allowEditDataExtend"
               v-model="formData.datasetExtend.dataProcess.uriFile.headers"
             ></Headers>
           </el-form-item>
@@ -154,7 +154,7 @@ const formData = computed({
               "
               size="large"
               active-text="启用不安全的连接时不会验证https证书"
-              :disabled="!allowEditDataExtend"
+              :disabled="disable || !allowEditDataExtend"
             />
           </el-form-item>
           <el-form-item label="代理">
@@ -164,7 +164,7 @@ const formData = computed({
               v-model="formData.datasetExtend.dataProcess.uriFile.proxy"
               style="width: 800px"
               clearable
-              :disabled="!allowEditDataExtend"
+              :disabled="disable || !allowEditDataExtend"
             />
             <el-text style="color: var(--el-text-color-secondary)"
               >支持 http, https, socks5, socks5h. 示例: https://127.0.0.1:1080
@@ -179,7 +179,7 @@ const formData = computed({
               v-model="formData.datasetExtend.dataProcess.uriFile.method"
               placeholder="Select"
               style="width: 240px"
-              :disabled="!allowEditDataExtend"
+              :disabled="disable || !allowEditDataExtend"
             >
               <el-option
                 v-for="item in dataProcessUriFileMethodOptions"
@@ -200,7 +200,7 @@ const formData = computed({
           v-model="formData.datasetExtend.dataProcess.trimUtf8Bom"
           size="large"
           active-text="去掉Utf8Bom文件头, 在数据处理中通常是有效的"
-          :disabled="!allowEditDataExtend"
+          :disabled="disable || !allowEditDataExtend"
         />
       </el-form-item>
       <el-form-item label="每秒速率(字节/s)" prop="rate_sec">
@@ -208,7 +208,7 @@ const formData = computed({
           <FileSpeedInput
             v-model="formData.rateLimit"
             :precision="0"
-            :disabled="!allowEditDataExtend"
+            :disabled="disable || !allowEditDataExtend"
           />
           <el-text style="color: var(--el-text-color-secondary)"
             >数据每秒处理速度, 0表示不限速</el-text
@@ -226,7 +226,7 @@ const formData = computed({
           v-model="formData.datasetExtend.chunkProcess.storeType"
           placeholder="Select"
           style="width: 240px"
-          :disabled="!allowEditDataExtend"
+          :disabled="disable || !allowEditDataExtend"
         >
           <el-option
             v-for="item in chunkProcessStoreTypeOptions"
@@ -268,7 +268,7 @@ const formData = computed({
           v-model="formData.datasetExtend.chunkProcess.compressType"
           placeholder="Select"
           style="width: 240px"
-          :disabled="!allowEditDataExtend"
+          :disabled="disable || !allowEditDataExtend"
         >
           <el-option
             v-for="item in chunkProcessCompressTypeOptions"
@@ -306,7 +306,7 @@ const formData = computed({
           show-word-limit
           v-model="formData.datasetExtend.valueProcess.delim"
           style="width: 400px"
-          :disabled="!allowEditDataExtend"
+          :disabled="disable || !allowEditDataExtend"
         />
         <el-text style="color: var(--el-text-color-secondary)"
           >分隔符用于确定value的边界</el-text
@@ -317,28 +317,28 @@ const formData = computed({
           v-model="formData.datasetExtend.valueProcess.trimSpace"
           size="large"
           active-text="将value前后的空字符去掉, 包括 '\t', '\n', '\v', '\f', '\r', ' ', U+0085 (NEL), U+00A0 (NBSP)"
-          :disabled="!allowEditDataExtend"
+          :disabled="disable || !allowEditDataExtend"
         />
       </el-form-item>
       <el-form-item label="去掉前缀">
         <el-input-tag
           v-model="formData.datasetExtend.valueProcess.trimPrefix"
           placeholder="输入后按Enter添加"
-          :disabled="!allowEditDataExtend"
+          :disabled="disable || !allowEditDataExtend"
         />
       </el-form-item>
       <el-form-item label="去掉后缀">
         <el-input-tag
           v-model="formData.datasetExtend.valueProcess.trimSuffix"
           placeholder="输入后按Enter添加"
-          :disabled="!allowEditDataExtend"
+          :disabled="disable || !allowEditDataExtend"
         />
       </el-form-item>
       <el-form-item label="过滤子字符串">
         <el-input-tag
           v-model="formData.datasetExtend.valueProcess.filterSubString"
           placeholder="输入后按Enter添加"
-          :disabled="!allowEditDataExtend"
+          :disabled="disable || !allowEditDataExtend"
         />
         <el-text style="color: var(--el-text-color-secondary)"
           >包含该字符串的value会被删除</el-text
@@ -348,7 +348,7 @@ const formData = computed({
         <el-input-tag
           v-model="formData.datasetExtend.valueProcess.filterPrefix"
           placeholder="输入后按Enter添加"
-          :disabled="!allowEditDataExtend"
+          :disabled="disable || !allowEditDataExtend"
         />
         <el-text style="color: var(--el-text-color-secondary)"
           >包含该字符串前缀的value会被删除</el-text
@@ -358,7 +358,7 @@ const formData = computed({
         <el-input-tag
           v-model="formData.datasetExtend.valueProcess.filterSuffix"
           placeholder="输入后按Enter添加"
-          :disabled="!allowEditDataExtend"
+          :disabled="disable || !allowEditDataExtend"
         />
         <el-text style="color: var(--el-text-color-secondary)"
           >包含该字符串后缀的value会被删除</el-text

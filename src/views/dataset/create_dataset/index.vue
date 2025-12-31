@@ -7,7 +7,7 @@ import { useRoute } from "vue-router";
 import { getToken } from "@/utils/auth";
 
 import iconCheck from "~icons/ep/check";
-import iconClose from "~icons/ep/close";
+import iconBack from "~icons/ep/back";
 import {
   DatasetFormData,
   DatasetInfoA2DatasetFormData,
@@ -16,10 +16,10 @@ import {
 import {
   DatasetAdminAddDatasetReq,
   DatasetAdminUpdateDatasetReq,
+  DatasetDatasetInfoA,
   DatasetQueryDatasetInfoReq
 } from "@/api/dataset";
 import { datasetClient } from "@/api/dataset_client";
-import TestGetValue from "./TestGetValue.vue";
 import iconVideoPlay from "~icons/ep/video-play";
 
 import { OpSource } from "@/views/dataset/utils/types";
@@ -166,15 +166,17 @@ function viewPageInit() {
 
 // 对于查看数据, 使用服务端的数据填充
 const isChange: boolean = route.name == "ChangeDataset";
-const isView: boolean = route.name == "ViewDataset";
-if (isChange || isView) viewPageInit();
+if (isChange) viewPageInit();
 const allowEditDataExtend = ref(true); // 数据扩展是否允许修改
-const datasetData = ref({}); // 数据集数据
+const datasetData = ref<DatasetDatasetInfoA>({}); // 数据集数据
 </script>
 
 <template>
   <div>
-    <DatasetInfoFrom :disable="isView" :allowEditDataExtend="allowEditDataExtend" v-model="formData" />
+    <DatasetInfoFrom
+      :allowEditDataExtend="allowEditDataExtend"
+      v-model="formData"
+    />
 
     <div>
       <el-button
@@ -182,7 +184,7 @@ const datasetData = ref({}); // 数据集数据
         :loading="isLoading"
         :disabled="isLoading"
         @click="submitCreate(false)"
-        v-if="!isChange && !isView"
+        v-if="!isChange"
         >添加</el-button
       >
       <el-button
@@ -190,7 +192,7 @@ const datasetData = ref({}); // 数据集数据
         :loading="isLoading"
         :disabled="isLoading"
         @click="submitCreate(true)"
-        v-if="!isChange && !isView"
+        v-if="!isChange"
         :icon="iconVideoPlay"
         >添加并分析数据</el-button
       >
@@ -203,14 +205,7 @@ const datasetData = ref({}); // 数据集数据
         :icon="iconCheck"
         >修改</el-button
       >
-      <el-button @click="router.back()" :icon="iconClose">取消</el-button>
-    </div>
-
-    <div>
-      <TestGetValue
-        v-if="isView && datasetData?.status == 3"
-        :datasetData="datasetData"
-      />
+      <el-button @click="router.back()" :icon="iconBack">取消</el-button>
     </div>
   </div>
 </template>

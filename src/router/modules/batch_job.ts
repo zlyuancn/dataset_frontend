@@ -34,7 +34,7 @@ export default {
     {
       path: "/Dataset/ViewDataset",
       name: "ViewDataset",
-      component: () => import("@/views/dataset/create_dataset/index.vue"),
+      component: () => import("@/views/dataset/dataset_info/index.vue"),
       meta: {
         title: "查看数据集",
         showLink: false
