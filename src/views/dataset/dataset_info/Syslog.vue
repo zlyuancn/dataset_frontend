@@ -9,7 +9,7 @@ import {
 import { message } from "@/utils/message";
 import { createSyslogColumns } from "./syslog_columns_rule";
 import JsonView from "./JsonView.vue";
-import type { TableV2Instance } from 'element-plus';
+import type { TableV2Instance } from "element-plus";
 import { date2Timestamp } from "@/utils/time";
 
 // 使用类型声明方式定义 props
@@ -120,7 +120,7 @@ onUnmounted(() => {
   }
 });
 const syslogColumnsRule = computed(() => {
-  return createSyslogColumns(tableWidth.value, false);
+  return createSyslogColumns(tableWidth.value, expandAllExtend.value);
 });
 
 // ----- 点击 extend 显示更友好的 json 组件 -----
@@ -147,6 +147,13 @@ const Row = ({ cells, rowData }: { cells: any; rowData: any }) => {
   );
 };
 Row.inheritAttrs = false;
+const expandAllExtend = ref(false);
+watch(
+  () => expandAllExtend.value,
+  () => {
+    tableKey.value += 1;
+  }
+);
 
 // 选择器
 async function refFilter() {
@@ -169,7 +176,6 @@ const rangeTime = ref([]);
 
 // ----- 修复滚动 -----
 const tableKey = ref(0); // 初始 key
-
 </script>
 
 <template>
@@ -184,9 +190,13 @@ const tableKey = ref(0); // 初始 key
       :default-time="defaultTime"
       @change="refFilter"
     />
+    <el-switch v-model="expandAllExtend" active-text="extend"></el-switch>
     <el-button type="primary" @click="refFilter">查询</el-button>
     <!-- 这个 div 用于测量宽度 -->
-    <div ref="tableContainerRef" style="width: 100%; min-width: 0; box-sizing: border-box">
+    <div
+      ref="tableContainerRef"
+      style="width: 100%; min-width: 0; box-sizing: border-box"
+    >
       <el-table-v2
         :key="tableKey"
         :columns="syslogColumnsRule"
@@ -205,7 +215,7 @@ const tableKey = ref(0); // 初始 key
       <div v-else>
         <span>加载失败，请重试</span>
         <el-button type="primary" size="small" @click="loadNextData"
-        >重试</el-button
+          >重试</el-button
         >
       </div>
     </div>

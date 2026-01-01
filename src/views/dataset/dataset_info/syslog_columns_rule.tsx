@@ -12,7 +12,7 @@ export function createSyslogColumns(
     {
       key: "id",
       dataKey: "id",
-      title: "index",
+      title: "序号",
       width: 50
     },
     {
