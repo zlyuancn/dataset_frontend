@@ -14,3 +14,10 @@ export const Status2CnName = {
 export enum OpSource {
   Web = "Web"
 }
+
+// 日志级别转换
+export const logType2EnName = {
+  0: 'INFO',
+  1: 'WARN',
+  2: 'ERROR',
+}

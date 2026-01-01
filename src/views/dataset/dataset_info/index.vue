@@ -65,7 +65,7 @@ const datasetData = ref<DatasetDatasetInfoA>({}); // 数据集数据
     <el-button @click="router.back()" :icon="iconBack">取消</el-button>
 
     <TestGetValue v-if="datasetData?.status == 3" :datasetData="datasetData" />
-    <SysLog :datasetId="datasetData?.datasetId" />
+    <SysLog :datasetId="String(datasetData?.datasetId ?? 0)" />
 
     <el-button @click="router.back()" :icon="iconBack">取消</el-button>
 
