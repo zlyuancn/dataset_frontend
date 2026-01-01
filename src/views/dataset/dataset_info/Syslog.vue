@@ -1,9 +1,10 @@
-<script setup lang="ts">
+<script setup lang="tsx">
 import CollapsibleBox from "@/components/CollapsibleBox/index.vue";
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from "vue";
 import { datasetClient, DatasetSysLogInfo } from "@/api/dataset_client";
 import { message } from "@/utils/message";
 import { createSyslogColumns } from "./syslog_columns_rule";
+import JsonView from "./JsonView.vue";
 
 // 使用类型声明方式定义 props
 const props = defineProps<{
@@ -15,7 +16,7 @@ const isLoading = ref(false);
 const error = ref("");
 const nextCursor = ref("0"); // 初始为 0 ，表示第一页
 const hasMore = ref(true); // 是否还有更多数据
-const tableData = ref<Array<DatasetSysLogInfo>>([]); // 数据
+const tableData = ref<(DatasetSysLogInfo & { children?: any[] })[]>([]); // 数据
 
 // 根据 cursor 获取下一批数据
 async function loadNextData() {
@@ -36,8 +37,17 @@ async function loadNextData() {
       pageSize: 20
     })
     .then(result => {
-      console.log(result, result?.data);
-      tableData.value.push(...(result?.data?.lines || [])); // 数据合并
+      const offset = tableData.value?.length ?? 0; // 为数据虚拟id的偏移值
+      let lines = result?.data?.lines;
+      lines?.map((line, index) => {
+        line.id = index + offset; // 为数据虚拟id
+        // 如果有扩展数据则附加 children 用于展开
+        if (line.extend) {
+          line.children = [{ extendExtend: line.extend }];
+        }
+        return line;
+      });
+      tableData.value.push(...(lines || [])); // 数据合并
       nextCursor.value = result?.data?.nextCursor ?? "0";
       hasMore.value = nextCursor.value != "0";
       error.value = "";
@@ -50,7 +60,7 @@ async function loadNextData() {
   isLoading.value = false;
 }
 
-// 初始化
+// 初始化后立即加载第一批数据
 watch(
   () => props.datasetId,
   newId => {
@@ -70,7 +80,7 @@ watch(
   { immediate: true } // 立即执行一次，用于处理初始就有 datasetId 的情况
 );
 
-// 表格宽度自适应
+// ----- 表格宽度自适应 -----
 const tableContainerRef = ref<HTMLDivElement | null>(null);
 const tableWidth = ref(800); // 默认 宽度
 function updateTableWidth() {
@@ -87,8 +97,33 @@ onUnmounted(() => {
   window.removeEventListener("resize", updateTableWidth);
 });
 const syslogColumnsRule = computed(() => {
-  return createSyslogColumns(tableWidth.value);
+  return createSyslogColumns(tableWidth.value, false);
 });
+
+// ----- 点击 extend 显示更友好的 json 组件 -----
+const Row = ({ cells, rowData }: { cells: any; rowData: any }) => {
+  if (rowData?.extendExtend) {
+    return (
+      <div class="json-expand-panel">
+        <JsonView raw={rowData.extendExtend} />
+      </div>
+    );
+  }
+  // 否则是普通行
+  return (
+    <div
+      style={{
+        minHeight: "40px",
+        overflow: "hidden",
+        display: "flex",
+        alignItems: "center"
+      }}
+    >
+      {cells}
+    </div>
+  );
+};
+Row.inheritAttrs = false;
 </script>
 
 <template>
@@ -99,11 +134,16 @@ const syslogColumnsRule = computed(() => {
         :columns="syslogColumnsRule"
         :data="tableData"
         :width="tableWidth"
-        :height="500"
-        :row-height="60"
+        :height="800"
         @end-reached="loadNextData"
-        v-if="error == ''"
-      />
+        v-if="error === ''"
+        :estimated-row-height="300"
+        :expand-column-key="'extend'"
+      >
+        <template #row="props">
+          <Row v-bind="props" style="height: 40px" />
+        </template>
+      </el-table-v2>
       <div v-else>
         <span>加载失败，请重试</span>
         <el-button type="primary" size="small" @click="loadNextData"
