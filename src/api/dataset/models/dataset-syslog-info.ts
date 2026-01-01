@@ -12,30 +12,36 @@
  * Do not edit the class manually.
  */
 
-import { DatasetSyslogInfo } from './dataset-syslog-info';
+import { DatasetDataLogType } from './dataset-data-log-type';
  /**
  * 
  *
  * @export
- * @interface DatasetQuerySyslogRsp
+ * @interface DatasetSyslogInfo
  */
-export interface DatasetQuerySyslogRsp {
+export interface DatasetSyslogInfo {
 
     /**
      * @type {string}
-     * @memberof DatasetQuerySyslogRsp
+     * @memberof DatasetSyslogInfo
      */
-    nextCursor?: string;
+    remark?: string;
 
     /**
-     * @type {number}
-     * @memberof DatasetQuerySyslogRsp
+     * @type {string}
+     * @memberof DatasetSyslogInfo
      */
-    pageSize?: number;
+    extend?: string;
 
     /**
-     * @type {Array<DatasetSyslogInfo>}
-     * @memberof DatasetQuerySyslogRsp
+     * @type {DatasetDataLogType}
+     * @memberof DatasetSyslogInfo
      */
-    lines?: Array<DatasetSyslogInfo>;
+    logType?: DatasetDataLogType;
+
+    /**
+     * @type {string}
+     * @memberof DatasetSyslogInfo
+     */
+    createTime?: string;
 }

@@ -35,7 +35,7 @@ export * from './dataset-search-dataset-name-line';
 export * from './dataset-search-dataset-name-req';
 export * from './dataset-search-dataset-name-rsp';
 export * from './dataset-status';
-export * from './dataset-sys-log-info';
+export * from './dataset-syslog-info';
 export * from './dataset-value-process';
 export * from './googlerpc-status';
 export * from './protobuf-any';

@@ -1,10 +1,16 @@
 <script setup lang="tsx">
 import CollapsibleBox from "@/components/CollapsibleBox/index.vue";
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from "vue";
-import { datasetClient, DatasetSysLogInfo } from "@/api/dataset_client";
+import {
+  datasetClient,
+  DatasetQuerySyslogReq,
+  DatasetSysLogInfo
+} from "@/api/dataset_client";
 import { message } from "@/utils/message";
 import { createSyslogColumns } from "./syslog_columns_rule";
 import JsonView from "./JsonView.vue";
+import { datasetListQueryArgs } from "@/views/dataset/dataset_list/data";
+import { date2Timestamp } from "@/utils/time";
 
 // 使用类型声明方式定义 props
 const props = defineProps<{
@@ -30,12 +36,17 @@ async function loadNextData() {
   }
 
   isLoading.value = true;
+  let req: DatasetQuerySyslogReq = {
+    datasetId: props.datasetId,
+    nextCursor: nextCursor.value,
+    pageSize: 20
+  };
+  if (rangeTime.value?.length == 2) {
+    req.startTime = String(date2Timestamp(rangeTime.value[0]) * 1000);
+    req.endTime = String(date2Timestamp(rangeTime.value[1]) * 1000);
+  }
   await datasetClient
-    .datasetServiceQuerySyslog({
-      datasetId: props.datasetId,
-      nextCursor: nextCursor.value,
-      pageSize: 20
-    })
+    .datasetServiceQuerySyslog(req)
     .then(result => {
       const offset = tableData.value?.length ?? 0; // 为数据虚拟id的偏移值
       let lines = result?.data?.lines;
@@ -124,10 +135,34 @@ const Row = ({ cells, rowData }: { cells: any; rowData: any }) => {
   );
 };
 Row.inheritAttrs = false;
+
+// 选择器
+function refFilter() {
+  tableData.value = [];
+  nextCursor.value = "0";
+  hasMore.value = true;
+  error.value = "";
+  loadNextData();
+}
+const defaultTime = ref<[Date, Date]>([
+  new Date(2000, 1, 1, 0, 0, 0),
+  new Date(2000, 2, 1, 23, 59, 59)
+]);
+const rangeTime = ref([]);
 </script>
 
 <template>
   <CollapsibleBox label="syslog" hide-btn>
+    <el-date-picker
+      v-model="rangeTime"
+      type="datetimerange"
+      unlink-panels
+      range-separator="To"
+      start-placeholder="开始日期"
+      end-placeholder="结束日期"
+      :default-time="defaultTime"
+      @change="refFilter"
+    />
     <!-- 包裹一个 div 用于测量宽度 -->
     <div ref="tableContainerRef" style="width: 100%; overflow: auto">
       <el-table-v2

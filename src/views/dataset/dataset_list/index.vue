@@ -39,13 +39,6 @@ const queryDataIsChange = ref(true);
 watch(datasetListQueryArgs, newV => {
   queryDataIsChange.value = true;
 });
-watch(
-  () => datasetListQueryArgs.rangeTime,
-  newV => {
-    queryDataIsChange.value = true;
-    submitQuery();
-  }
-);
 
 const router = useRouter();
 
@@ -277,6 +270,7 @@ const handleSearchDataset = (query) => {
               start-placeholder="开始日期"
               end-placeholder="结束日期"
               :default-time="defaultTime"
+              @change="forceQuery"
             />
           </el-space>
           <el-button type="primary" @click="forceQuery" :icon="iconSearch"

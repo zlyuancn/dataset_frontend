@@ -56,4 +56,10 @@ export interface DatasetQuerySyslogReq {
      * @memberof DatasetQuerySyslogReq
      */
     logType?: Array<DatasetDataLogType>;
+
+    /**
+     * @type {boolean}
+     * @memberof DatasetQuerySyslogReq
+     */
+    asc?: boolean;
 }
