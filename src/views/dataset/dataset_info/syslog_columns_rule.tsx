@@ -22,7 +22,8 @@ export function createSyslogColumns(
       width: 200,
       cellRenderer: ({ cellData: v }) => (
         <span>{formatTimestamp(Number(v) / 1000)}</span>
-      )
+      ),
+      sortable: true,
     },
     {
       key: "logType",

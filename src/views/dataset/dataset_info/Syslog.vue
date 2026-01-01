@@ -9,8 +9,11 @@ import {
 import { message } from "@/utils/message";
 import { createSyslogColumns } from "./syslog_columns_rule";
 import JsonView from "./JsonView.vue";
-import type { TableV2Instance } from "element-plus";
 import { date2Timestamp } from "@/utils/time";
+
+import { TableV2SortOrder } from "element-plus";
+import type { SortBy } from "element-plus";
+import { logType2EnName } from "@/views/dataset/utils/types";
 
 // 使用类型声明方式定义 props
 const props = defineProps<{
@@ -39,7 +42,9 @@ async function loadNextData() {
   let req: DatasetQuerySyslogReq = {
     datasetId: props.datasetId,
     nextCursor: nextCursor.value,
-    pageSize: 20
+    pageSize: 20,
+    asc: sortState.value?.order === "asc",
+    logType: (logTypes.value ?? []).map(x => Number(x))
   };
   if (rangeTime.value?.length == 2) {
     req.startTime = String(date2Timestamp(rangeTime.value[0]) * 1000);
@@ -176,22 +181,57 @@ const rangeTime = ref([]);
 
 // ----- 修复滚动 -----
 const tableKey = ref(0); // 初始 key
+
+// ----- 时间排序 -----
+const sortState = ref<SortBy>({
+  key: "createTime",
+  order: TableV2SortOrder.DESC
+});
+const onSort = (sortBy: SortBy) => {
+  sortState.value = sortBy;
+  refFilter();
+};
+
+// ----- 日志类型过滤 -----
+const logTypes = ref([]);
 </script>
 
 <template>
   <CollapsibleBox label="syslog" hide-btn>
-    <el-date-picker
-      v-model="rangeTime"
-      type="datetimerange"
-      unlink-panels
-      range-separator="To"
-      start-placeholder="开始日期"
-      end-placeholder="结束日期"
-      :default-time="defaultTime"
-      @change="refFilter"
-    />
-    <el-switch v-model="expandAllExtend" active-text="extend"></el-switch>
-    <el-button type="primary" @click="refFilter">查询</el-button>
+    <el-space size="large">
+      <el-select
+        v-model="logTypes"
+        placeholder="日志类型"
+        style="width: 240px"
+        :disabled="isLoading"
+        multiple
+        clearable
+      >
+        <el-option
+          v-for="(item, index) in logType2EnName"
+          :key="item"
+          :label="item"
+          :value="index"
+        />
+      </el-select>
+      <el-date-picker
+        v-model="rangeTime"
+        type="datetimerange"
+        unlink-panels
+        range-separator="To"
+        start-placeholder="开始日期"
+        end-placeholder="结束日期"
+        :default-time="defaultTime"
+        @change="refFilter"
+        :disabled="isLoading"
+      />
+      <el-switch
+        v-model="expandAllExtend"
+        active-text="extend"
+        :disabled="isLoading"
+      ></el-switch>
+      <el-button type="primary" @click="refFilter">查询</el-button>
+    </el-space>
     <!-- 这个 div 用于测量宽度 -->
     <div
       ref="tableContainerRef"
@@ -207,6 +247,8 @@ const tableKey = ref(0); // 初始 key
         v-if="error === ''"
         :estimated-row-height="300"
         :expand-column-key="'extend'"
+        :sort-by="sortState"
+        @column-sort="onSort"
       >
         <template #row="props">
           <Row v-bind="props" />
