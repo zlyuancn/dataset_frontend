@@ -9,7 +9,7 @@ import {
 import { message } from "@/utils/message";
 import { createSyslogColumns } from "./syslog_columns_rule";
 import JsonView from "./JsonView.vue";
-import { datasetListQueryArgs } from "@/views/dataset/dataset_list/data";
+import type { TableV2Instance } from 'element-plus';
 import { date2Timestamp } from "@/utils/time";
 
 // 使用类型声明方式定义 props
@@ -58,7 +58,8 @@ async function loadNextData() {
         }
         return line;
       });
-      tableData.value.push(...(lines || [])); // 数据合并
+      // tableData.value.push(...(lines || [])); // 数据合并
+      tableData.value = [...tableData.value, ...(lines || [])]; // 数据合并
       nextCursor.value = result?.data?.nextCursor ?? "0";
       hasMore.value = nextCursor.value != "0";
       error.value = "";
@@ -97,15 +98,26 @@ const tableWidth = ref(800); // 默认 宽度
 function updateTableWidth() {
   if (tableContainerRef.value) {
     // 获取父容器的 content width（不含 padding）
-    tableWidth.value = Math.min(tableContainerRef.value.clientWidth, 1800);
+    const rect = tableContainerRef.value.getBoundingClientRect();
+    const w = Math.floor(rect.width); // 取整避免小数问题
+    console.log("[DEBUG] Table container width (getBoundingClientRect):", w);
+    tableWidth.value = Math.max(800, Math.min(w, 1800));
   }
 }
+let resizeObserver: ResizeObserver | null = null;
 onMounted(() => {
   updateTableWidth();
-  window.addEventListener("resize", updateTableWidth);
+  if (tableContainerRef.value) {
+    resizeObserver = new ResizeObserver(() => {
+      updateTableWidth();
+    });
+    resizeObserver.observe(tableContainerRef.value);
+  }
 });
 onUnmounted(() => {
-  window.removeEventListener("resize", updateTableWidth);
+  if (resizeObserver) {
+    resizeObserver.disconnect();
+  }
 });
 const syslogColumnsRule = computed(() => {
   return createSyslogColumns(tableWidth.value, false);
@@ -137,11 +149,16 @@ const Row = ({ cells, rowData }: { cells: any; rowData: any }) => {
 Row.inheritAttrs = false;
 
 // 选择器
-function refFilter() {
+async function refFilter() {
   tableData.value = [];
   nextCursor.value = "0";
   hasMore.value = true;
   error.value = "";
+
+  // 重置滚动
+  tableKey.value += 1;
+
+  // 加载数据
   loadNextData();
 }
 const defaultTime = ref<[Date, Date]>([
@@ -149,6 +166,10 @@ const defaultTime = ref<[Date, Date]>([
   new Date(2000, 2, 1, 23, 59, 59)
 ]);
 const rangeTime = ref([]);
+
+// ----- 修复滚动 -----
+const tableKey = ref(0); // 初始 key
+
 </script>
 
 <template>
@@ -163,9 +184,11 @@ const rangeTime = ref([]);
       :default-time="defaultTime"
       @change="refFilter"
     />
-    <!-- 包裹一个 div 用于测量宽度 -->
-    <div ref="tableContainerRef" style="width: 100%; overflow: auto">
+    <el-button type="primary" @click="refFilter">查询</el-button>
+    <!-- 这个 div 用于测量宽度 -->
+    <div ref="tableContainerRef" style="width: 100%; min-width: 0; box-sizing: border-box">
       <el-table-v2
+        :key="tableKey"
         :columns="syslogColumnsRule"
         :data="tableData"
         :width="tableWidth"
@@ -176,13 +199,13 @@ const rangeTime = ref([]);
         :expand-column-key="'extend'"
       >
         <template #row="props">
-          <Row v-bind="props" style="height: 40px" />
+          <Row v-bind="props" />
         </template>
       </el-table-v2>
       <div v-else>
         <span>加载失败，请重试</span>
         <el-button type="primary" size="small" @click="loadNextData"
-          >重试</el-button
+        >重试</el-button
         >
       </div>
     </div>
