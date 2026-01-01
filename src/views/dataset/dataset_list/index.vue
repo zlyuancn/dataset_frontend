@@ -35,11 +35,6 @@ const defaultTime = ref<[Date, Date]>([
   new Date(2000, 2, 1, 23, 59, 59)
 ]);
 
-const queryDataIsChange = ref(true);
-watch(datasetListQueryArgs, newV => {
-  queryDataIsChange.value = true;
-});
-
 const router = useRouter();
 
 function resetQuery(): void {
@@ -47,15 +42,9 @@ function resetQuery(): void {
   submitQuery();
 }
 function forceQuery(): void {
-  queryDataIsChange.value = true;
   submitQuery();
 }
 const submitQuery = () => {
-  if (!queryDataIsChange.value) {
-    return;
-  }
-  queryDataIsChange.value = false;
-
   isLoading.value = true;
   const req: DatasetQueryDatasetListReq = {
     page: datasetListQueryArgs.page,
@@ -64,7 +53,7 @@ const submitQuery = () => {
     status: datasetListQueryStatusArgsTransform[datasetListQueryArgs.status],
     opUser: datasetListQueryArgs.opUser
   };
-  if (datasetListQueryArgs?.rangeTime.length == 2) {
+  if (datasetListQueryArgs?.rangeTime?.length == 2) {
     req.startTime = String(date2Timestamp(datasetListQueryArgs.rangeTime[0]));
     req.endTime = String(date2Timestamp(datasetListQueryArgs.rangeTime[1]));
   }
@@ -267,8 +256,8 @@ const handleSearchDataset = (query) => {
               type="daterange"
               unlink-panels
               range-separator="To"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
+              start-placeholder="创建开始日期"
+              end-placeholder="创建结束日期"
               :default-time="defaultTime"
               @change="forceQuery"
             />
