@@ -4,7 +4,6 @@ import { computed, nextTick, onMounted, onUnmounted, ref, watch } from "vue";
 import {
   datasetClient,
   DatasetQuerySyslogReq,
-  DatasetSysLogInfo
 } from "@/api/dataset_client";
 import { message } from "@/utils/message";
 import { createSyslogColumns } from "./syslog_columns_rule";
@@ -25,7 +24,7 @@ const isLoading = ref(false);
 const error = ref("");
 const nextCursor = ref("0"); // 初始为 0 ，表示第一页
 const hasMore = ref(true); // 是否还有更多数据
-const tableData = ref<(DatasetSysLogInfo & { children?: any[] })[]>([]); // 数据
+const tableData = ref([]); // 数据
 
 // 根据 cursor 获取下一批数据
 async function loadNextData() {
@@ -54,14 +53,17 @@ async function loadNextData() {
     .datasetServiceQuerySyslog(req)
     .then(result => {
       const offset = tableData.value?.length ?? 0; // 为数据虚拟id的偏移值
-      let lines = result?.data?.lines;
-      lines?.map((line, index) => {
-        line.id = index + offset; // 为数据虚拟id
+      let lines = result?.data?.lines?.map((line, index) => {
+        let ret = {
+          ...line,
+          id: index + offset, // 为数据虚拟id
+          children: [],
+        }
         // 如果有扩展数据则附加 children 用于展开
         if (line.extend) {
-          line.children = [{ extendExtend: line.extend }];
+          ret.children = [{ extendExtend: line.extend }];
         }
-        return line;
+        return ret;
       });
       // tableData.value.push(...(lines || [])); // 数据合并
       tableData.value = [...tableData.value, ...(lines || [])]; // 数据合并

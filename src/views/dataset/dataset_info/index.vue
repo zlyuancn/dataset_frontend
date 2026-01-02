@@ -2,7 +2,7 @@
 // 数据集信息
 import DatasetInfoFrom from "@/views/dataset/compoents/DatasetInfoFrom/index.vue";
 import TestGetValue from "./TestGetValue.vue";
-import SysLog from "./SysLog.vue";
+import SysLog from "./Syslog.vue";
 import { reactive, ref } from "vue";
 import {
   DatasetFormData,
