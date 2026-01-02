@@ -51,7 +51,7 @@ async function loadNextData() {
   }
   await datasetClient
     .datasetServiceQuerySyslog(req)
-    .then(result => {
+    .then(async (result) => {
       const offset = tableData.value?.length ?? 0; // 为数据虚拟id的偏移值
       let lines = result?.data?.lines?.map((line, index) => {
         let ret = {
@@ -70,6 +70,17 @@ async function loadNextData() {
       nextCursor.value = result?.data?.nextCursor ?? "0";
       hasMore.value = nextCursor.value != "0";
       error.value = "";
+
+      // 检查立即自动加载
+      isLoading.value = false;
+      console.log('hasMore.value', hasMore.value);
+      console.log('shouldAutoLoadMore', shouldAutoLoadMore());
+      if (hasMore.value && shouldAutoLoadMore() && autoLoadCount < MAX_AUTO_LOAD_PAGES) {
+        autoLoadCount++;
+        // 使用 nextTick 确保 DOM 更新后再加载
+        await nextTick();
+        await loadNextData(); // 递归，标记为自动触发
+      }
     })
     .catch(err => {
       console.log(err);
@@ -98,6 +109,16 @@ watch(
   },
   { immediate: true } // 立即执行一次，用于处理初始就有 datasetId 的情况
 );
+
+// ----- 自动加载优化 -----
+const MAX_AUTO_LOAD_PAGES = 5; // 最多自动加载 3 页
+let autoLoadCount = 0; // 当前已自动加载次数
+// 判断当前数据是否足以填满表格高度
+function shouldAutoLoadMore(): boolean {
+  const rowCount = tableData.value.length;
+  const estimatedTotalHeight = rowCount * 40; // 使用与 :estimated-row-height 一致的值
+  return estimatedTotalHeight < 800; // 表格高度
+}
 
 // ----- 表格宽度自适应 -----
 const tableContainerRef = ref<HTMLDivElement | null>(null);
@@ -168,8 +189,9 @@ async function refFilter() {
   nextCursor.value = "0";
   hasMore.value = true;
   error.value = "";
+  autoLoadCount = 0;
 
-  // 重置滚动
+  // 重置table
   tableKey.value += 1;
 
   // 加载数据
