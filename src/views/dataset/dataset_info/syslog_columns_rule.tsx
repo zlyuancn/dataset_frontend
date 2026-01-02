@@ -1,13 +1,13 @@
 import { Columns } from "element-plus";
 import { formatTimestamp } from "@/utils/time";
-import { DatasetSysLogInfo } from "@/api/dataset";
+import { DatasetSyslogInfo } from "@/api/dataset";
 
 export function createSyslogColumns(
   availableWidth: number,
   expandAllExtend: boolean,
-): Columns<DatasetSysLogInfo> {
-  const fixedWidth = 200 + 100 + 200; // createTime + logType + remark
-  const extendWidth = Math.max(300, availableWidth - fixedWidth); // 最小 300px
+): Columns<DatasetSyslogInfo> {
+  const fixedWidth = 50 + 200 + 150 + 300; // id + createTime + logType + remark
+  const extendWidth = Math.max(100, availableWidth - fixedWidth);
   return [
     {
       key: "id",
@@ -32,8 +32,8 @@ export function createSyslogColumns(
       width: 100,
       cellRenderer: ({ cellData: v }) => {
         if (!v || Number(v) == 0) return <el-tag type="primary">INFO</el-tag>;
-        else if (Number(v) == 1) return <el-tag type="warning">INFO</el-tag>;
-        else if (Number(v) == 2) return <el-tag type="danger">INFO</el-tag>;
+        else if (Number(v) == 1) return <el-tag type="warning">WARN</el-tag>;
+        else if (Number(v) == 2) return <el-tag type="danger">ERROR</el-tag>;
       }
     },
     { key: "remark", dataKey: "remark", title: "备注", width: 300 },

@@ -129,7 +129,7 @@ function updateTableWidth() {
     const rect = tableContainerRef.value.getBoundingClientRect();
     const w = Math.floor(rect.width); // 取整避免小数问题
     console.log("[DEBUG] Table container width (getBoundingClientRect):", w);
-    tableWidth.value = Math.max(800, Math.min(w, 1800));
+    tableWidth.value = Math.max(800, w);
   }
 }
 let resizeObserver: ResizeObserver | null = null;
@@ -152,22 +152,39 @@ const syslogColumnsRule = computed(() => {
 });
 
 // ----- 点击 extend 显示更友好的 json 组件 -----
+const expandedRowKeys = ref<(string | number)[]>([]); // 控制展开的 keys
 const Row = ({ cells, rowData }: { cells: any; rowData: any }) => {
   if (rowData?.extendExtend) {
     return (
-      <div class="json-expand-panel">
+      <div class="json-expand-panel" style="width: 100%; min-width: 0; box-sizing: border-box">
         <JsonView raw={rowData.extendExtend} />
       </div>
     );
   }
+  // 点击时切换展开状态
+  const toggleExpand = () => {
+    if (!rowData.children || rowData.children.length === 0) return;
+
+    const key = rowData.id;
+    const index = expandedRowKeys.value.indexOf(key);
+    if (index > -1) {
+      // 收起
+      expandedRowKeys.value = expandedRowKeys.value.filter(k => k !== key);
+    } else {
+      // 展开
+      expandedRowKeys.value = [...expandedRowKeys.value, key];
+    }
+  };
   // 否则是普通行
   return (
     <div
+      onClick={toggleExpand}
       style={{
         minHeight: "40px",
         overflow: "hidden",
         display: "flex",
-        alignItems: "center"
+        alignItems: "center",
+        cursor: rowData.children?.length > 0 ? "pointer" : "default"
       }}
     >
       {cells}
@@ -273,6 +290,7 @@ const logTypes = ref([]);
         :expand-column-key="'extend'"
         :sort-by="sortState"
         @column-sort="onSort"
+        :expanded-row-keys="expandedRowKeys"
       >
         <template #row="props">
           <Row v-bind="props" />
